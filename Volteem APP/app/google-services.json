@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "388010276716",
+    "firebase_url": "https://volteem-75e9d.firebaseio.com",
+    "project_id": "volteem-75e9d",
+    "storage_bucket": "volteem-75e9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388010276716:android:b9a94bf0b6c496ea",
+        "android_client_info": {
+          "package_name": "volteem.com.volteem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388010276716-tharej7rcs0556tfsjnt0jknssi6q1v8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "volteem.com.volteem",
+            "certificate_hash": "0db361bd8907c7dfa47217a3dd0cd9f892d3c42f"
+          }
+        },
+        {
+          "client_id": "388010276716-sm5iim9ptffr18ugq1hm1bjd4firl7bv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkmK7l_OIdBsLyy99IVAfZoAL4SVHy-_s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388010276716-sm5iim9ptffr18ugq1hm1bjd4firl7bv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
