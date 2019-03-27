@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import volteem.com.volteem.R;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
     private ProgressDialog mProgressDialog;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView status;
     private LoginActivityPresenter presenter;
 
     @Override
@@ -37,6 +39,12 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
         mProgressView = findViewById(R.id.login_progress);
         mEmail.setFilters(createEmailAddressFilter());
 
+        if (status == null) {
+
+            status = findViewById(R.id.login_status);
+            status.setText("Log in status: not logged in.");
+        }
+
         findViewById(R.id.sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,8 +56,37 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
         findViewById(R.id.register_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Register is premium only, 50$/month.", Toast.LENGTH_LONG).show();
-                // presenter.onRegisterButtonPressed();
+                if (!presenter.isUserLoggedIn()) {
+                    startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "already logged in", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //TODO: after testing delette goto mainactivity and sign out buttons
+        findViewById(R.id.go_to_mainactivity).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (presenter.isUserLoggedIn()) {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "not logged in", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        findViewById(R.id.sign_out).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (presenter.isUserLoggedIn()) {
+                    presenter.logOut();
+                    status.setText("Log in status: not logged in");
+                } else {
+                    Toast.makeText(LoginActivity.this, "not logged in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -113,8 +150,12 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
 
     @Override
     public void onSignInCompleted() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        //TODO: after testing go back to this method's functionality
+        if (status == null)
+            status = findViewById(R.id.login_status);
+        status.setText("Log in status: logged in");
+        //startActivity(new Intent(this, MainActivity.class));
+        //finish();
     }
 
     @Override

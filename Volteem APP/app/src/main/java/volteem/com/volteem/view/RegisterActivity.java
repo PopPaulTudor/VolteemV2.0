@@ -1,6 +1,7 @@
 package volteem.com.volteem.view;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     private long birthdate;
     private Spinner spinner;
     private List<String> gender = new ArrayList<>();
-    private String mGender;
+    private String mGender = "Gender";
     private RegisterActivityPresenter presenter;
 
     @Override
@@ -37,8 +38,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
         presenter = new RegisterActivityPresenter(this);
         presenter.onCreate();
         spinner = findViewById(R.id.register_gender);
-        mEmail = findViewById(R.id.email);
-        mPassword = findViewById(R.id.password);
+        mEmail = findViewById(R.id.register_email);
+        mPassword = findViewById(R.id.register_password);
         mPhone = findViewById(R.id.register_phone);
         mCity = findViewById(R.id.register_city);
         mBirthDate = findViewById(R.id.register_birthdate);
@@ -102,6 +103,19 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 presenter.onRegisterButtonPressed(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
             }
         });
+
+        findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityByClass(LoginActivity.class);
+            }
+        });
+    }
+
+    private void startActivityByClass(Class activity) {
+        Intent intent = new Intent(RegisterActivity.this, activity);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -124,7 +138,15 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
 
     @Override
     public void onRegisterSuccessful() {
+        //TODO: change target activity back to main activity after testing
+        Toast.makeText(this, "Account successfully created. A verification email has been sent to your email address.", Toast.LENGTH_LONG).show();
+        //startActivityByClass(MainActivity.class);
+        startActivityByClass(LoginActivity.class);
+    }
 
+    @Override
+    public void onBackPressed() {
+        startActivityByClass(LoginActivity.class);
     }
 
     @Override

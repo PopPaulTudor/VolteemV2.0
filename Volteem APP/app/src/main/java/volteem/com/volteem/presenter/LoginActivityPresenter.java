@@ -16,7 +16,7 @@ public class LoginActivityPresenter implements Presenter, LoginActivityModel.Mod
     @Override
     public void onCreate() {
         this.model = new LoginActivityModel(this);
-        if(model.isUserLoggedIn())
+        if (model.isUserLoggedIn())
             view.onSignInCompleted();
     }
 
@@ -36,10 +36,18 @@ public class LoginActivityPresenter implements Presenter, LoginActivityModel.Mod
     }
 
     public void onSignInButtonPressed(String eMail, String password) {
-        if(!model.isUserLoggedIn())
+        if (!model.isUserLoggedIn())
             model.signIn(eMail, password);
         else
             view.onSignInCompleted();
+    }
+
+    public boolean isUserLoggedIn() {
+        return model.isUserLoggedIn();
+    }
+
+    public void logOut() {
+        model.logOut();
     }
 
     @Override
@@ -54,6 +62,7 @@ public class LoginActivityPresenter implements Presenter, LoginActivityModel.Mod
 
     public interface View {
         void onSignInCompleted();
+
         void onSignInFailed(LoginException loginException);
     }
 }
