@@ -152,7 +152,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/back"
+                android:id="@+id/button_back"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

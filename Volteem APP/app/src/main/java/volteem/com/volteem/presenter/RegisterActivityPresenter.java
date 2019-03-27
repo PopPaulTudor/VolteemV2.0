@@ -37,11 +37,10 @@ public class RegisterActivityPresenter implements Presenter, RegisterActivityMod
                                         long birthdate, String city, String phone, String gender) {
 
         model.registerNewUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, gender);
-
     }
 
     @Override
-    public void onRegisterFailed() {
+    public void onRegisterSucceeded() {
         view.onRegisterSuccessful();
     }
 
@@ -52,6 +51,7 @@ public class RegisterActivityPresenter implements Presenter, RegisterActivityMod
 
     public interface View {
         void onRegisterSuccessful();
+
         void onRegisterFailed(LoginException loginException);
     }
 }

@@ -16,11 +16,12 @@ public class LoginActivityModel {
 
     private static final String TAG = "LoginActivityModel";
     private ModelCallback modelCallback;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth;
     private LoginException loginException;
 
     public LoginActivityModel(ModelCallback modelCallback) {
         this.modelCallback = modelCallback;
+        this.mAuth = FirebaseAuth.getInstance();
     }
 
     public void signIn(String eMail, String password) {
@@ -81,6 +82,10 @@ public class LoginActivityModel {
 
     public boolean isUserLoggedIn() {
         return mAuth.getCurrentUser() != null;
+    }
+
+    public void logOut() {
+        mAuth.signOut();
     }
 
     public interface ModelCallback {
