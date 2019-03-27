@@ -41,6 +41,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
             @Override
             public void onClick(View view) {
                 presenter.onSignInButtonPressed(mEmail.getText().toString(), mPassword.getText().toString());
+            onSignInCompleted();
+
             }
         });
 

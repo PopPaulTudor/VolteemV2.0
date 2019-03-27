@@ -24,4 +24,9 @@
     <string name="prompt_gender">Gender</string>
     <string name="button_register">REGISTER</string>
     <string name="button_back">BACK</string>
+    <string name="no_internet">\"Check internet connection\"</string>
+    <string name="logout_message_title">Log out</string>
+    <string name="log_out_message">Are you sure you want to log out?</string>
+    <string name="logout_yes">Yes</string>
+    <string name="logout_no">No</string>
 </resources>
