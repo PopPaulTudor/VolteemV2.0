@@ -5,18 +5,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +22,7 @@ import android.widget.Toast;
 import volteem.com.volteem.R;
 import volteem.com.volteem.presenter.MainActivityPresenter;
 
-public class MainActivity extends AppCompatActivity implements  MainActivityPresenter.View,NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements MainActivityPresenter.View, NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private MainActivityPresenter presenter;
@@ -45,19 +42,17 @@ public class MainActivity extends AppCompatActivity implements  MainActivityPres
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
-
         navigationView.setNavigationItemSelectedListener(this);
-
-
     }
 
     @Override
@@ -105,9 +100,6 @@ public class MainActivity extends AppCompatActivity implements  MainActivityPres
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     presenter.logOut();
-                                    startActivity(new Intent(MainActivity.this, LoginActivity
-                                            .class));
-                                    finish();
                                 }
                             })
                             .setNegativeButton(getString(R
@@ -119,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements  MainActivityPres
                             })
                             .create();
                     logoutAlertDialog.show();
-
                     break;
 
                 }
@@ -129,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements  MainActivityPres
                     break;
             }
 
-
-
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(actionBarTitle);
             }
@@ -138,25 +127,22 @@ public class MainActivity extends AppCompatActivity implements  MainActivityPres
         } else {
             Toast.makeText(this, getString(R.string.no_internet), Toast.LENGTH_LONG).show();
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
-    public boolean isNetworkAvailable()
-    {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager == null ? null : connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
 
     }
 
-
     @Override
-    public void logOut() {
-
+    public void onLogOutSuccessful() {
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
     }
 }
 

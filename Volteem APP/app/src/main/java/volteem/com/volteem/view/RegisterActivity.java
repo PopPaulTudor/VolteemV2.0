@@ -138,10 +138,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
 
     @Override
     public void onRegisterSuccessful() {
-        //TODO: change target activity back to main activity after testing
         Toast.makeText(this, "Account successfully created. A verification email has been sent to your email address.", Toast.LENGTH_LONG).show();
-        //startActivityByClass(MainActivity.class);
-        startActivityByClass(LoginActivity.class);
+        startActivityByClass(MainActivity.class);
     }
 
     @Override

@@ -8,12 +8,10 @@ public class MainActivityPresenter implements Presenter, MainActivityModel.Model
     private View view;
     private MainActivityModel model;
 
-
     public MainActivityPresenter(View view) {
-        this.view=view;
-        this.model=new MainActivityModel(this);
+        this.view = view;
+        this.model = new MainActivityModel(this);
     }
-
 
     @Override
     public void onCreate() {
@@ -36,12 +34,13 @@ public class MainActivityPresenter implements Presenter, MainActivityModel.Model
     }
 
     public void logOut() {
-        view.logOut();
+        model.logOut();
+        if (!model.isUserLoggedIn())
+            view.onLogOutSuccessful();
     }
-
 
     public interface View {
 
-        void logOut();
+        void onLogOutSuccessful();
     }
 }
