@@ -64,7 +64,6 @@ public class RegisterActivityModel {
                                 user.sendEmailVerification();
                             }
                             modelCallback.onRegisterSucceeded();
-
                         } else {
                             Log.d(TAG, "creating user: failed");
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -73,7 +72,7 @@ public class RegisterActivityModel {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                     loginException = new LoginException("email", "Please enter a valid email address.");
                                 } else {
-                                    loginException = new LoginException("unknown", task.getException().getMessage());
+                                    loginException = new LoginException("other", task.getException().getMessage());
                                     Log.w("Error registering ", task.getException());
                                 }
                             }
@@ -82,7 +81,6 @@ public class RegisterActivityModel {
                     }
 
                 });
-
     }
 
     private LoginException validateForm(final String eMail, String password, String confirmPassword, final String firstName,

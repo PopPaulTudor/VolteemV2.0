@@ -54,11 +54,13 @@ public class LoginActivityModel {
                                             exception.getMessage().contains("user")) {
                                         loginException = new LoginException("email", exception.getMessage());
                                     } else {
+                                        loginException = new LoginException("other", exception.getMessage());
                                         Log.e(TAG, exception.getMessage());
                                     }
                                 } else {
                                     // In this case there can be any Exception
                                     Log.e(TAG, exception.getMessage());
+                                    loginException = new LoginException("other", exception.getMessage());
                                 }
                             }
                             modelCallback.onSignInFailed(loginException);

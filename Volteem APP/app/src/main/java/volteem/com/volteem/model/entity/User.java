@@ -4,6 +4,8 @@ public class User {
     private String firstName, lastName, eMail, city, phone, gender;
     private long birthDate;
 
+    //TODO: add a creation timestamp field
+
     public User() { ///constructor is empty to be able to call dataSnapshot on this class
 
     }

@@ -3,13 +3,14 @@ package volteem.com.volteem.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.LoginException;
@@ -118,15 +119,22 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
     }
 
     @Override
-    public void onSignInFailed(LoginException loginException) {
+    public void onSignInFailed(@NonNull LoginException loginException) {
         mEmail.setError(null);
         mPassword.setError(null);
-        if (loginException.getCause().equals("email")) {
-            mEmail.setError(loginException.getMessage());
-            mEmail.requestFocus();
-        } else {
-            mPassword.setError(loginException.getMessage());
-            mPassword.requestFocus();
+        String error = loginException.getMessage();
+        switch (loginException.getCause()) {
+            case "email":
+                mEmail.setError(error);
+                mEmail.requestFocus();
+                break;
+            case "password":
+                mPassword.setError(error);
+                mPassword.requestFocus();
+                break;
+            default:
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

@@ -3,6 +3,7 @@ package volteem.com.volteem.view;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -148,7 +149,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     }
 
     @Override
-    public void onRegisterFailed(LoginException loginException) {
+    public void onRegisterFailed(@NonNull LoginException loginException) {
         String error = loginException.getMessage();
         switch (loginException.getCause()) {
             case "email":
@@ -187,6 +188,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
             default:
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
