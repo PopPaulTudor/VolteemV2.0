@@ -29,4 +29,8 @@
     <string name="log_out_message">Are you sure you want to log out?</string>
     <string name="logout_yes">Yes</string>
     <string name="logout_no">No</string>
+    <string name="item__log_out">Log out</string>
+    <string name="item_settings">Settings</string>
+    <string name="nav_home">Home</string>
+    <string name="notifications">Notifications</string>
 </resources>
