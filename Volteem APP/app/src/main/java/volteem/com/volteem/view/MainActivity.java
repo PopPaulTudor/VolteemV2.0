@@ -93,6 +93,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     break;
                 }
 
+                case R.id.nav_news: {
+                    Fragment fragment = new NewsFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "News";
+                    break;
+                }
+
                 case R.id.nav_settings: {
                     Fragment fragment = new SettingsFragment();
                     replaceFragmentByClass(fragment);
