@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import volteem.com.volteem.R;
-import volteem.com.volteem.model.entity.LoginException;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.RegisterActivityPresenter;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterActivityPresenter.View {
@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 String lastName = mLastname.getText().toString();
                 String city = mCity.getText().toString();
                 String phone = mPhone.getText().toString();
-                presenter.onRegisterButtonPressed(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
+                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
             }
         });
 
@@ -149,9 +149,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     }
 
     @Override
-    public void onRegisterFailed(@NonNull LoginException loginException) {
-        String error = loginException.getMessage();
-        switch (loginException.getCause()) {
+    public void onRegisterFailed(@NonNull VolteemCommonException volteemCommonException) {
+        String error = volteemCommonException.getMessage();
+        switch (volteemCommonException.getCause()) {
             case "email":
                 mEmail.setError(error);
                 mEmail.requestFocus();

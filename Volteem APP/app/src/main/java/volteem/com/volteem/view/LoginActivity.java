@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import volteem.com.volteem.R;
-import volteem.com.volteem.model.entity.LoginException;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.LoginActivityPresenter;
 
 public class LoginActivity extends AppCompatActivity implements LoginActivityPresenter.View {
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
         findViewById(R.id.sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onSignInButtonPressed(mEmail.getText().toString(), mPassword.getText().toString());
+                presenter.signIn(mEmail.getText().toString(), mPassword.getText().toString());
             }
         });
 
@@ -119,11 +119,11 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
     }
 
     @Override
-    public void onSignInFailed(@NonNull LoginException loginException) {
+    public void onSignInFailed(@NonNull VolteemCommonException volteemCommonException) {
         mEmail.setError(null);
         mPassword.setError(null);
-        String error = loginException.getMessage();
-        switch (loginException.getCause()) {
+        String error = volteemCommonException.getMessage();
+        switch (volteemCommonException.getCause()) {
             case "email":
                 mEmail.setError(error);
                 mEmail.requestFocus();

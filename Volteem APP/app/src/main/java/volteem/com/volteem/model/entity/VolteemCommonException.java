@@ -1,10 +1,10 @@
 package volteem.com.volteem.model.entity;
 
-public class DataRetrieveException {
+public class VolteemCommonException {
     private String cause;
     private String message;
 
-    public DataRetrieveException(String cause, String message) {
+    public VolteemCommonException(String cause, String message) {
         this.cause = cause;
         this.message = message;
     }

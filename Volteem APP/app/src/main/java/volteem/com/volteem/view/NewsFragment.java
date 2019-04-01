@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import volteem.com.volteem.R;
 import volteem.com.volteem.adapter.NewsAdapter;
 import volteem.com.volteem.callback.ActionListener;
-import volteem.com.volteem.model.entity.DataRetrieveException;
 import volteem.com.volteem.model.entity.NewsMessage;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.NewsFragmentPresenter;
 
 public class NewsFragment extends Fragment implements NewsFragmentPresenter.View, ActionListener.NewsDeletedListener {
@@ -39,6 +39,24 @@ public class NewsFragment extends Fragment implements NewsFragmentPresenter.View
         newsRecView.setHasFixedSize(true);
         presenter.onCreate();
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @Override
@@ -62,8 +80,8 @@ public class NewsFragment extends Fragment implements NewsFragmentPresenter.View
     }
 
     @Override
-    public void onDataRetrieveFailed(DataRetrieveException dataRetrieveException) {
-        Toast.makeText(getActivity(), dataRetrieveException.getCause(), Toast.LENGTH_SHORT).show();
+    public void onDataRetrieveFailed(VolteemCommonException volteemCommonException) {
+        Toast.makeText(getActivity(), volteemCommonException.getCause(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
