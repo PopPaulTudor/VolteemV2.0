@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 import volteem.com.volteem.model.entity.NewsMessage;
@@ -34,6 +35,8 @@ public class DatabaseUtils {
     private LoginCallback loginCallback;
     private RegisterCallback registerCallback;
     private NewsCallback newsCallback;
+    private MainCallBack mainCallBack;
+    private ProfileCallBack profileCallBack;
     private ArrayList<NewsMessage> newsList;
 
     public DatabaseUtils(LoginCallback loginCallback) {
@@ -49,6 +52,17 @@ public class DatabaseUtils {
 
     public DatabaseUtils(NewsCallback newsCallback) {
         this.newsCallback = newsCallback;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public DatabaseUtils(ProfileCallBack profileCallBack) {
+        this.profileCallBack = profileCallBack;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+    public DatabaseUtils(MainCallBack mainCallBack) {
+        this.mainCallBack = mainCallBack;
         this.mAuth = FirebaseAuth.getInstance();
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -160,28 +174,70 @@ public class DatabaseUtils {
         });
     }
 
+
+    public void getProfileInformation()
+    {
+        FirebaseUser firebaseUser=mAuth.getCurrentUser();
+        ValueEventListener mVolunteerProfileListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user == null) {
+                    profileCallBack.onProfileInformationFailed(new VolteemCommonException("User not found","Can not retrieve information about the user"));
+                    return;
+                }
+
+
+                profileCallBack.onProfileInformationSucceeded(user);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                profileCallBack.onProfileInformationFailed(new VolteemCommonException("Information Profile",
+                        "Could not get information for profile"));
+            }
+        };
+        assert firebaseUser != null;
+        mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
+        mDatabase.removeEventListener(mVolunteerProfileListener);
+
+    }
+
+    public void getProfilePicture()
+    {
+
+
+
+
+    }
+
     public boolean isUserLoggedIn() {
         return mAuth.getCurrentUser() != null;
     }
 
     public interface LoginCallback {
-
         void onSignInSucceeded();
-
         void onSignInFailed(VolteemCommonException volteemCommonException);
     }
 
     public interface RegisterCallback {
-
         void onRegisterSucceeded();
-
         void onRegisterFailed(VolteemCommonException volteemCommonException);
     }
 
     public interface NewsCallback {
-
         void onDataRetrieved(ArrayList<NewsMessage> newsList);
-
         void onDataRetrieveFailed(VolteemCommonException volteemCommonException);
+    }
+
+    public interface ProfileCallBack {
+        void onProfileInformationSucceeded(User user);
+        void onProfileInformationFailed(VolteemCommonException volteemCommonException);
+    }
+
+    public interface MainCallBack{
+        void onSignOutSucceeded();
+        void onSignOutInformationFailed(VolteemCommonException volteemCommonException);
     }
 }

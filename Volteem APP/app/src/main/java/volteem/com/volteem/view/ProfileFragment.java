@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import volteem.com.volteem.R;
-import volteem.com.volteem.model.entity.LoginException;
+import volteem.com.volteem.model.entity.User;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.ProfileFragmentPresenter;
+import volteem.com.volteem.util.CalendarUtils;
 
 
 public class ProfileFragment extends Fragment implements ProfileFragmentPresenter.View {
@@ -38,8 +40,6 @@ public class ProfileFragment extends Fragment implements ProfileFragmentPresente
         profileCircleImage= v.findViewById(R.id.profile_circle_image);
         phoneTextView=v.findViewById(R.id.profile_phone);
 
-        presenter.getProfileInformation();
-        presenter.getProfilePicture();
 
         return v;
     }
@@ -75,8 +75,10 @@ public class ProfileFragment extends Fragment implements ProfileFragmentPresente
 
     }
 
+
+
     @Override
-    public void onProfileInformationFailed(LoginException loginException) {
+    public void onProfileInformationFailed(VolteemCommonException exception) {
 
     }
 }

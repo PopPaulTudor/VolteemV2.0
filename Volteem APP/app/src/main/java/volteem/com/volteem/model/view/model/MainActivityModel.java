@@ -1,26 +1,16 @@
 package volteem.com.volteem.model.view.model;
 
 
-import com.google.firebase.auth.FirebaseAuth;
+import android.arch.lifecycle.ViewModel;
 
-public class MainActivityModel {
 
-    private ModelCallback modelCallback;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+public class MainActivityModel extends ViewModel {
 
-    public MainActivityModel(ModelCallback modelCallback) {
-        this.modelCallback = modelCallback;
-    }
 
-    public void logOut() {
-        mAuth.signOut();
-    }
-
-    public boolean isUserLoggedIn() {
-        return mAuth.getCurrentUser() != null;
-    }
-
-    public interface ModelCallback {
+    public MainActivityModel() {
 
     }
+
+
+
 }

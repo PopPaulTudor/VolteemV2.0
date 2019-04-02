@@ -1,5 +1,6 @@
 package volteem.com.volteem.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +23,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import volteem.com.volteem.R;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.MainActivityPresenter;
+
+import static android.view.Gravity.LEFT;
 
 public class MainActivity extends AppCompatActivity implements MainActivityPresenter.View, NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,9 +53,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RtlHardcoded")
             @Override
             public void onClick(View view) {
-                drawerLayout.openDrawer(Gravity.LEFT);
+                drawerLayout.openDrawer(LEFT);
             }
         });
         replaceFragmentByClass(new HomeFragment());
@@ -88,17 +93,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     .getTitle());
             switch (id) {
                 case R.id.nav_profile: {
-                    fragment = new HomeFragment();
+                    fragment = new ProfileFragment();
                     replaceFragmentByClass(fragment);
                     actionBarTitle = "Home";
+                    break;
 
                 }
+                case R.id.nav_home: {
                     fragment = new HomeFragment();
                     replaceFragmentByClass(fragment);
                     actionBarTitle = "Home";
                     break;
 
-
+                }
                 case R.id.nav_news: {
                     fragment = new NewsFragment();
                     replaceFragmentByClass(fragment);
@@ -179,6 +186,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     public void onLogOutSuccessful() {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
         finish();
+    }
+
+    @Override
+    public void onLogOutInformationFailed(VolteemCommonException volteemCommonException) {
+        Toast.makeText(getApplicationContext(),"Log out failed",Toast.LENGTH_SHORT).show();
     }
 }
 
