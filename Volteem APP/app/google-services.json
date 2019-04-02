@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "388010276716-0i7c5p8ge2teh4qc83n2kbdvqc7oa653.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "volteem.com.volteem",
+            "certificate_hash": "806c84b4ddd55e82da69486e1a9cd0e3e17d9be8"
+          }
+        },
+        {
           "client_id": "388010276716-sm5iim9ptffr18ugq1hm1bjd4firl7bv.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/item_1"
-            android:icon="@drawable/common_full_open_on_phone"
-            android:title="add Name" />
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/googleg_standard_color_18"
+            android:title="@string/nav_profile" />
 
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/common_full_open_on_phone"
-            android:title="Log out" />
+            android:title="@string/nav_log_out" />
 
 
     </group>

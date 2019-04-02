@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -79,11 +81,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         int id = item.getItemId();
 
         if (isNetworkAvailable()) {
+            Fragment fragment=null;
             String actionBarTitle = getActionBar() == null ? "" : String.valueOf(getActionBar()
                     .getTitle());
             switch (id) {
-                case R.id.item_1: {
-                    Toast.makeText(getApplicationContext(), "item_1", Toast.LENGTH_SHORT).show();
+                case R.id.nav_profile: {
+                    fragment=new ProfileFragment();
                     break;
                 }
 
@@ -120,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     break;
             }
 
+            if (fragment != null) {
+                replaceFragmentByClass(fragment);
+            }
+
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(actionBarTitle);
             }
@@ -137,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         NetworkInfo activeNetworkInfo = connectivityManager == null ? null : connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
 
+    }
+
+    private void replaceFragmentByClass(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_container, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override

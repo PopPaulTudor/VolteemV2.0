@@ -29,4 +29,7 @@
     <string name="log_out_message">Are you sure you want to log out?</string>
     <string name="logout_yes">Yes</string>
     <string name="logout_no">No</string>
+    <string name="profile_feedback">Feedback</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_log_out">Log out</string>
 </resources>
