@@ -2,6 +2,8 @@ package volteem.com.volteem.presenter;
 
 
 
+import android.net.Uri;
+
 import java.util.Calendar;
 
 import volteem.com.volteem.model.entity.User;
@@ -21,7 +23,7 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
     public ProfileFragmentPresenter(View view)
     {
         this.view= view;
-        this.model=new ProfileFragmentModel(null);
+        this.model=new ProfileFragmentModel(null,null);
         this.databaseUtils= new DatabaseUtils(this);
     }
 
@@ -29,7 +31,7 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
     public void onCreate() {
 
         if(model== null)
-            this.model= new ProfileFragmentModel(null);
+            this.model= new ProfileFragmentModel(null,null);
 
         getProfileInformation();
        // getProfilePicture();
@@ -62,7 +64,7 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
        }else {
            String username= model.getUser().getFirstName()+" "+model.getUser().getLastName();
            String age= CalendarUtils.getAgeFromBirthdate(model.getUser().getBirthDate())+"";
-           view.onProfileInformationSucceeded(username,model.getUser().geteMail(),model.getUser().getCity(),age,model.getUser().getPhone());
+           view.onProfileInformationSucceeded(username,model.getUser().geteMail(),model.getUser().getCity(),age,model.getUser().getPhone(),model.getUri());
        }
 
     }
@@ -70,11 +72,11 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
 
 
     @Override
-    public void onProfileInformationSucceeded(User user) {
+    public void onProfileInformationSucceeded(User user,Uri uri) {
 
         String username= user.getFirstName()+" "+user.getLastName();
         String age= CalendarUtils.getAgeFromBirthdate(user.getBirthDate())+"";
-        view.onProfileInformationSucceeded(username,user.geteMail(),user.getCity(),age,user.getPhone());
+        view.onProfileInformationSucceeded(username,user.geteMail(),user.getCity(),age,user.getPhone(),uri);
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
 
     public interface  View
     {
-        void onProfileInformationSucceeded(String username, String email, String address, String age, String phone);
+        void onProfileInformationSucceeded(String username, String email, String address, String age, String phone, Uri uri);
         void onProfileInformationFailed(VolteemCommonException exception);
     }
 }

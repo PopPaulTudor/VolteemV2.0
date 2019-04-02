@@ -1,9 +1,13 @@
 package volteem.com.volteem.view;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,22 +18,29 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.RegisterActivityPresenter;
+import volteem.com.volteem.util.PermissionUtil;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterActivityPresenter.View {
 
+    private static final int GALLERY_INTENT = 1;
     private EditText mEmail, mPassword, mPhone, mCity, mBirthDate, mFirstName, mLastname, mConfirmPass;
+    private CircleImageView circleImageView;
     private long birthdate;
     private Spinner spinner;
     private List<String> gender = new ArrayList<>();
     private String mGender = "Gender";
     private RegisterActivityPresenter presenter;
+    private Uri uri=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
         mFirstName = findViewById(R.id.register_first_name);
         mLastname = findViewById(R.id.register_last_name);
         mConfirmPass = findViewById(R.id.register_password_confirm);
+        circleImageView= findViewById(R.id.register_add_photo);
 
         mBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 String lastName = mLastname.getText().toString();
                 String city = mCity.getText().toString();
                 String phone = mPhone.getText().toString();
-                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
+                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender,uri);
             }
         });
 
@@ -111,6 +123,27 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 startActivityByClass(LoginActivity.class);
             }
         });
+
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (PermissionUtil.isStorageReadPermissionGranted(getApplicationContext())) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY_INTENT);
+
+                } else {
+                    Snackbar.make(view, "Please allow storage permission", Snackbar.LENGTH_LONG).setAction("Set Permission", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        }
+                    }).show();
+                }
+            }
+        });
+
     }
 
     private void startActivityByClass(Class activity) {
@@ -190,6 +223,15 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
             default:
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_INTENT && (data != null)) {
+            uri = data.getData();
+            Picasso.get().load(uri).fit().centerCrop().into(circleImageView);
         }
     }
 }

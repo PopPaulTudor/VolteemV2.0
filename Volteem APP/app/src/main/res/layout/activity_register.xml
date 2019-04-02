@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <ScrollView
@@ -13,6 +13,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/register_add_photo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@color/colorPrimary"
+                app:civ_border_color="@color/colorAccent"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                app:civ_border_width="3dp" />
+
+            </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -97,9 +113,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:focusable="false"
                     android:hint="@string/prompt_birthdate"
                     android:inputType="number"
-                    android:focusable="false"
                     android:visibility="visible" />
 
             </android.support.design.widget.TextInputLayout>
@@ -151,6 +167,8 @@
                 android:text="@string/button_register"
                 android:textStyle="bold" />
 
+
+
             <Button
                 android:id="@+id/button_back"
                 style="?android:textAppearanceSmall"
@@ -160,6 +178,7 @@
                 android:background="@color/colorAccent"
                 android:text="@string/button_back"
                 android:textStyle="bold" />
+
 
         </LinearLayout>
     </ScrollView>

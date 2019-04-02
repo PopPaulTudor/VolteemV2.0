@@ -1,5 +1,6 @@
 package volteem.com.volteem.presenter;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import volteem.com.volteem.model.entity.VolteemCommonException;
@@ -77,14 +78,14 @@ public class RegisterActivityPresenter implements Presenter, DatabaseUtils.Regis
     }
 
     public void registerUser(String eMail, String password, String confirmPassword, String firstName, String lastName,
-                             long birthdate, String city, String phone, String gender) {
+                             long birthdate, String city, String phone, String gender, Uri uri) {
 
         VolteemCommonException volteemCommonException = validateForm(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, gender);
         if (volteemCommonException != null) {
             view.onRegisterFailed(volteemCommonException);
             return;
         }
-        databaseUtils.registerNewUser(eMail, password, firstName, lastName, birthdate, city, phone, gender);
+        databaseUtils.registerNewUser(eMail, password, firstName, lastName, birthdate, city, phone, gender,uri);
     }
 
     @Override

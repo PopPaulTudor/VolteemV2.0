@@ -1,5 +1,6 @@
 package volteem.com.volteem.view;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,12 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import volteem.com.volteem.R;
-import volteem.com.volteem.model.entity.User;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.ProfileFragmentPresenter;
-import volteem.com.volteem.util.CalendarUtils;
 
 
 public class ProfileFragment extends Fragment implements ProfileFragmentPresenter.View {
@@ -41,6 +42,7 @@ public class ProfileFragment extends Fragment implements ProfileFragmentPresente
         phoneTextView=v.findViewById(R.id.profile_phone);
 
 
+
         return v;
     }
 
@@ -65,13 +67,14 @@ public class ProfileFragment extends Fragment implements ProfileFragmentPresente
 
 
     @Override
-    public void onProfileInformationSucceeded(String username, String email, String address, String age, String phone) {
+    public void onProfileInformationSucceeded(String username, String email, String address, String age, String phone, Uri uri) {
 
         userNameTextView.setText(username);
         emailTextView.setText(email);
         addressTextView.setText(address);
         ageTextView.setText(age);
         phoneTextView.setText(phone);
+        Picasso.get().load(uri).fit().centerCrop().into(profileCircleImage);
 
     }
 

@@ -50,7 +50,7 @@ public class MainActivityPresenter implements Presenter, DatabaseUtils.MainCallB
     }
 
     public void logOut() {
-        mAuth.signOut();
+        databaseUtils.signOut();
         if (!databaseUtils.isUserLoggedIn())
             view.onLogOutSuccessful();
         else view.onLogOutInformationFailed(new VolteemCommonException("Log Out","Log out failed"));
