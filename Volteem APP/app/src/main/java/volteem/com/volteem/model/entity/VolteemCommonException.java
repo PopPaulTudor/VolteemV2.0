@@ -1,10 +1,10 @@
 package volteem.com.volteem.model.entity;
 
-public class LoginException {
+public class VolteemCommonException {
     private String cause;
     private String message;
 
-    public LoginException(String cause, String message) {
+    public VolteemCommonException(String cause, String message) {
         this.cause = cause;
         this.message = message;
     }

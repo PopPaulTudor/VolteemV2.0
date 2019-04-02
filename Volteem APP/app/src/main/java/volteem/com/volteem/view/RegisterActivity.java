@@ -3,6 +3,7 @@ package volteem.com.volteem.view;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,7 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import volteem.com.volteem.R;
-import volteem.com.volteem.model.entity.LoginException;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.RegisterActivityPresenter;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterActivityPresenter.View {
@@ -100,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 String lastName = mLastname.getText().toString();
                 String city = mCity.getText().toString();
                 String phone = mPhone.getText().toString();
-                presenter.onRegisterButtonPressed(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
+                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender);
             }
         });
 
@@ -148,9 +149,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     }
 
     @Override
-    public void onRegisterFailed(LoginException loginException) {
-        String error = loginException.getMessage();
-        switch (loginException.getCause()) {
+    public void onRegisterFailed(@NonNull VolteemCommonException volteemCommonException) {
+        String error = volteemCommonException.getMessage();
+        switch (volteemCommonException.getCause()) {
             case "email":
                 mEmail.setError(error);
                 mEmail.requestFocus();
@@ -187,6 +188,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
             default:
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

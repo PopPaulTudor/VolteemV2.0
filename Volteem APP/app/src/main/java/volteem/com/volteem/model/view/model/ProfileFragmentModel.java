@@ -1,7 +1,6 @@
 package volteem.com.volteem.model.view.model;
 
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,7 +15,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 
-import volteem.com.volteem.model.entity.LoginException;
+import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.model.entity.User;
 
 public class ProfileFragmentModel {
@@ -50,7 +49,7 @@ public class ProfileFragmentModel {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-            modelCallback.onProfileInformationFailed(new LoginException("Information Profile",
+            modelCallback.onProfileInformationFailed(new VolteemCommonException("Information Profile",
                     "Could not get information for profile"));
             }
         };
@@ -83,7 +82,7 @@ public class ProfileFragmentModel {
         void onProfileInformationSucceeded(String username, String email, String address,
                                            String age, String phone);
 
-        void onProfileInformationFailed(LoginException loginException);
+        void onProfileInformationFailed(VolteemCommonException loginException);
 
     }
 }

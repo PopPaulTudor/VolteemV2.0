@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+        replaceFragmentByClass(new HomeFragment());
+        navigationView.setItemIconTintList(null);
+        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -75,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         presenter.onDestroy();
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -86,7 +88,28 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     .getTitle());
             switch (id) {
                 case R.id.nav_profile: {
-                    fragment=new ProfileFragment();
+                    fragment = new HomeFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "Home";
+
+                }
+                    fragment = new HomeFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "Home";
+                    break;
+
+
+                case R.id.nav_news: {
+                    fragment = new NewsFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "News";
+                    break;
+                }
+
+                case R.id.nav_settings: {
+                     fragment = new SettingsFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "Settings";
                     break;
                 }
 
@@ -148,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
     private void replaceFragmentByClass(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_container, fragment);
+        fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
     }
 
