@@ -1,6 +1,5 @@
 package volteem.com.volteem.util;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -24,7 +23,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 import volteem.com.volteem.model.entity.NewsMessage;
@@ -32,7 +30,10 @@ import volteem.com.volteem.model.entity.User;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 
 public class DatabaseUtils {
-
+    /* Methods that do not require callbacks can be declared static; also, if you don't need callbacks
+        in a class, do not instantiate the DatabaseUtils as it is not needed, only call the static methods,
+        and do not create interfaces for that class to implement.
+    */
     private static final String TAG = "DatabaseUtils";
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -40,10 +41,8 @@ public class DatabaseUtils {
     private LoginCallback loginCallback;
     private RegisterCallback registerCallback;
     private NewsCallback newsCallback;
-    private MainCallBack mainCallBack;
     private ProfileCallBack profileCallBack;
     private ArrayList<NewsMessage> newsList;
-
 
     public DatabaseUtils(LoginCallback loginCallback) {
         this.loginCallback = loginCallback;
@@ -64,11 +63,6 @@ public class DatabaseUtils {
 
     public DatabaseUtils(ProfileCallBack profileCallBack) {
         this.profileCallBack = profileCallBack;
-        this.mAuth = FirebaseAuth.getInstance();
-        this.mDatabase = FirebaseDatabase.getInstance().getReference();
-    }
-    public DatabaseUtils(MainCallBack mainCallBack) {
-        this.mainCallBack = mainCallBack;
         this.mAuth = FirebaseAuth.getInstance();
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -114,17 +108,12 @@ public class DatabaseUtils {
                 });
     }
 
-    public void signOut()
-    {
-        mAuth.signOut();
+    public static void signOut() {
+        FirebaseAuth.getInstance().signOut();
     }
-
 
     public void registerNewUser(final String eMail, String password, final String firstName, final String lastName,
                                 final long birthdate, final String city, final String phone, final String gender, final Uri uri) {
-
-
-
 
         Log.d(TAG, "creating account...");
         mAuth.createUserWithEmailAndPassword(eMail, password)
@@ -151,7 +140,7 @@ public class DatabaseUtils {
 
                                 StorageReference mStorage = FirebaseStorage.getInstance().getReference();
                                 StorageReference filePath = mStorage.child("Photos").child("User").child(userID);
-                                filePath.putBytes(ImageUtils.compressImage(uri,VolteemApp.getContext().getResources()));
+                                filePath.putBytes(ImageUtils.compressImage(uri, VolteemApp.getContext().getResources()));
                             }
                             registerCallback.onRegisterSucceeded();
                         } else {
@@ -169,7 +158,6 @@ public class DatabaseUtils {
                             registerCallback.onRegisterFailed(volteemCommonException);
                         }
                     }
-
                 });
     }
 
@@ -193,29 +181,23 @@ public class DatabaseUtils {
         });
     }
 
-
-    public void getProfileInformation()
-    {
-        final FirebaseUser firebaseUser=mAuth.getCurrentUser();
+    public void getProfileInformation() {
+        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
         ValueEventListener mVolunteerProfileListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final User user = dataSnapshot.getValue(User.class);
                 if (user == null) {
-                    profileCallBack.onProfileInformationFailed(new VolteemCommonException("User not found","Can not retrieve information about the user"));
+                    profileCallBack.onProfileInformationFailed(new VolteemCommonException("User not found", "Can not retrieve information about the user"));
                     return;
                 }
-
-
 
                 FirebaseStorage.getInstance().getReference().child("Photos").child("User").child(firebaseUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        profileCallBack.onProfileInformationSucceeded(user,uri);
-
+                        profileCallBack.onProfileInformationSucceeded(user, uri);
                     }
                 });
-
             }
 
             @Override
@@ -230,34 +212,31 @@ public class DatabaseUtils {
 
     }
 
-
-
-    public boolean isUserLoggedIn() {
-        return mAuth.getCurrentUser() != null;
+    public static boolean isUserLoggedIn() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
     public interface LoginCallback {
         void onSignInSucceeded();
+
         void onSignInFailed(VolteemCommonException volteemCommonException);
     }
 
     public interface RegisterCallback {
         void onRegisterSucceeded();
+
         void onRegisterFailed(VolteemCommonException volteemCommonException);
     }
 
     public interface NewsCallback {
         void onDataRetrieved(ArrayList<NewsMessage> newsList);
+
         void onDataRetrieveFailed(VolteemCommonException volteemCommonException);
     }
 
     public interface ProfileCallBack {
-        void onProfileInformationSucceeded(User user,Uri uri);
-        void onProfileInformationFailed(VolteemCommonException volteemCommonException);
-    }
+        void onProfileInformationSucceeded(User user, Uri uri);
 
-    public interface MainCallBack{
-        void onSignOutSucceeded();
-        void onSignOutInformationFailed(VolteemCommonException volteemCommonException);
+        void onProfileInformationFailed(VolteemCommonException volteemCommonException);
     }
 }

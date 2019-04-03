@@ -83,7 +83,6 @@ public final class ImageUtils {
         return resources.getDisplayMetrics().density / 3f;
     }
 
-
     public static String getFileName(Uri uri, Activity activity) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -107,6 +106,4 @@ public final class ImageUtils {
         }
         return result;
     }
-
-
 }

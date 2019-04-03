@@ -10,11 +10,9 @@ public class ProfileFragmentModel extends ViewModel {
     private User user;
     private Uri uri;
 
-
-
     public ProfileFragmentModel(User user, Uri uri) {
-        this.user=user;
-        this.uri=uri;
+        this.user = user;
+        this.uri = uri;
     }
 
     public User getUser() {

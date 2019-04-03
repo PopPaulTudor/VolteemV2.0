@@ -17,7 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -88,14 +87,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         int id = item.getItemId();
 
         if (isNetworkAvailable()) {
-            Fragment fragment=null;
+            Fragment fragment = null;
             String actionBarTitle = getActionBar() == null ? "" : String.valueOf(getActionBar()
                     .getTitle());
             switch (id) {
                 case R.id.nav_profile: {
                     fragment = new ProfileFragment();
                     replaceFragmentByClass(fragment);
-                    actionBarTitle = "Home";
+                    actionBarTitle = "Profile";
                     break;
 
                 }
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                 }
 
                 case R.id.nav_settings: {
-                     fragment = new SettingsFragment();
+                    fragment = new SettingsFragment();
                     replaceFragmentByClass(fragment);
                     actionBarTitle = "Settings";
                     break;
@@ -145,14 +144,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                             .create();
                     logoutAlertDialog.show();
                     break;
-
                 }
                 default:
                     Toast.makeText(getApplicationContext(),
                             "Couldn't find item", Toast.LENGTH_SHORT).show();
                     break;
             }
-
             if (fragment != null) {
                 replaceFragmentByClass(fragment);
             }
@@ -190,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
     @Override
     public void onLogOutInformationFailed(VolteemCommonException volteemCommonException) {
-        Toast.makeText(getApplicationContext(),"Log out failed",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Log out failed", Toast.LENGTH_SHORT).show();
     }
 }
-

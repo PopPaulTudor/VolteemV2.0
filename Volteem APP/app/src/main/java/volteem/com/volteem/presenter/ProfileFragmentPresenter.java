@@ -1,10 +1,7 @@
 package volteem.com.volteem.presenter;
 
 
-
 import android.net.Uri;
-
-import java.util.Calendar;
 
 import volteem.com.volteem.model.entity.User;
 import volteem.com.volteem.model.entity.VolteemCommonException;
@@ -13,30 +10,27 @@ import volteem.com.volteem.util.CalendarUtils;
 import volteem.com.volteem.util.DatabaseUtils;
 
 
-public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.ProfileCallBack {
+public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.ProfileCallBack {
 
     private View view;
     private ProfileFragmentModel model;
     private DatabaseUtils databaseUtils;
 
-
-    public ProfileFragmentPresenter(View view)
-    {
-        this.view= view;
-        this.model=new ProfileFragmentModel(null,null);
-        this.databaseUtils= new DatabaseUtils(this);
+    public ProfileFragmentPresenter(View view) {
+        this.view = view;
+        this.model = new ProfileFragmentModel(null, null);
+        this.databaseUtils = new DatabaseUtils(this);
     }
 
     @Override
     public void onCreate() {
 
-        if(model== null)
-            this.model= new ProfileFragmentModel(null,null);
+        if (model == null)
+            this.model = new ProfileFragmentModel(null, null);
 
         getProfileInformation();
-       // getProfilePicture();
+        // getProfilePicture();
         //getEvents();
-
     }
 
     @Override
@@ -54,29 +48,24 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
 
     }
 
-
-
-
-    public void getProfileInformation()
-    {
-       if(model.getUser()==null) {
-           databaseUtils.getProfileInformation();
-       }else {
-           String username= model.getUser().getFirstName()+" "+model.getUser().getLastName();
-           String age= CalendarUtils.getAgeFromBirthdate(model.getUser().getBirthDate())+"";
-           view.onProfileInformationSucceeded(username,model.getUser().geteMail(),model.getUser().getCity(),age,model.getUser().getPhone(),model.getUri());
-       }
-
+    private void getProfileInformation() {
+        if (model.getUser() == null) {
+            databaseUtils.getProfileInformation();
+        } else {
+            String username = model.getUser().getFirstName() + " " + model.getUser().getLastName();
+            String age = CalendarUtils.getAgeFromBirthdate(model.getUser().getBirthDate()) + "";
+            view.onProfileInformationSucceeded(username, model.getUser().geteMail(), model.getUser().getCity(), age, model.getUser().getPhone(), model.getUri());
+        }
     }
 
-
-
     @Override
-    public void onProfileInformationSucceeded(User user,Uri uri) {
+    public void onProfileInformationSucceeded(User user, Uri uri) {
 
-        String username= user.getFirstName()+" "+user.getLastName();
-        String age= CalendarUtils.getAgeFromBirthdate(user.getBirthDate())+"";
-        view.onProfileInformationSucceeded(username,user.geteMail(),user.getCity(),age,user.getPhone(),uri);
+        model.setUser(user);
+        model.setUri(uri);
+        String username = user.getFirstName() + " " + user.getLastName();
+        String age = CalendarUtils.getAgeFromBirthdate(user.getBirthDate()) + "";
+        view.onProfileInformationSucceeded(username, user.geteMail(), user.getCity(), age, user.getPhone(), uri);
     }
 
     @Override
@@ -84,10 +73,9 @@ public class ProfileFragmentPresenter  implements Presenter, DatabaseUtils.Profi
         view.onProfileInformationFailed(exception);
     }
 
-
-    public interface  View
-    {
+    public interface View {
         void onProfileInformationSucceeded(String username, String email, String address, String age, String phone, Uri uri);
+
         void onProfileInformationFailed(VolteemCommonException exception);
     }
 }

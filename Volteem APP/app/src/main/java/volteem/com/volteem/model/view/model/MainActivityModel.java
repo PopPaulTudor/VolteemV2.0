@@ -6,11 +6,7 @@ import android.arch.lifecycle.ViewModel;
 
 public class MainActivityModel extends ViewModel {
 
-
     public MainActivityModel() {
 
     }
-
-
-
 }
