@@ -17,7 +17,7 @@ public class Event {
     private ArrayList<String> requiredQuestions;
 
 
-    public Event() {
+    public Event(String s, String s1, String s2, int i, int i1, String s3, String s4, int i2, int i3, Object o) {
 
     }
 

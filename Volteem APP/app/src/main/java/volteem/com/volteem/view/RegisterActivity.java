@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -231,7 +231,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_INTENT && (data != null)) {
             uri = data.getData();
-            Picasso.get().load(uri).fit().centerCrop().into(circleImageView);
+            Glide.with(this).load(uri).into(circleImageView);
+
         }
     }
 }

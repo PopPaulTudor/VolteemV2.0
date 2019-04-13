@@ -38,4 +38,10 @@
     <string name="item_news">News</string>
     <string name="no_news">You have no news.</string>
     <string name="register_add_profile_photo">Add profile photo</string>
+    <string name="about_text">This is about Volteem. About us. If you want to be part of the best project contact us</string>
+    <string name="item_about">About</string>
+    <string name="profile_no_events">You didn\'t participate at any events. You should try some of our events!</string>
+    <string name="profile_adapter_no_feedback">No feedback</string>
+    <string name="view_image">View image</string>
+    <string name="change_image">Change image</string>
 </resources>

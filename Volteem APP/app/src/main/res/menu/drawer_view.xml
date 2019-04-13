@@ -23,6 +23,11 @@
             android:title="@string/item_settings" />
 
         <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/common_google_signin_btn_icon_light_focused"
+            android:title="@string/item_about"/>
+
+        <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/common_full_open_on_phone"
             android:title="@string/item_log_out" />
