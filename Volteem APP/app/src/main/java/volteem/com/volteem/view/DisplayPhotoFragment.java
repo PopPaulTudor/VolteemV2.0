@@ -40,8 +40,7 @@ public class DisplayPhotoFragment extends Fragment implements DisplayPhotoFragme
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                assert getFragmentManager() != null;
-                getFragmentManager().popBackStackImmediate();
+                if (getFragmentManager() != null) getFragmentManager().popBackStackImmediate();
             }
         });
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -217,10 +218,10 @@ public class DatabaseUtils {
                         "Could not get information for profile"));
             }
         };
-        assert firebaseUser != null;
-        mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
-        mDatabase.removeEventListener(mVolunteerProfileListener);
-
+        if(firebaseUser != null){
+            mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
+            mDatabase.removeEventListener(mVolunteerProfileListener);
+        }
     }
 
     public void getProfilePicture() {
@@ -325,7 +326,8 @@ public class DatabaseUtils {
             message = message + " " + "address";
         }
 
-        if (!message.equals("")) profileCallBack.onProfileDataChangedSucceeded(message);
+        if (!message.equals(""))
+            profileCallBack.onProfileDataChangedSucceeded(message, firstName, secondName, phone, address, birthdate);
         else profileCallBack.onProfileDataChangedFailed();
     }
 
@@ -373,7 +375,7 @@ public class DatabaseUtils {
 
         void onProfilePhotoChangedSucceeded(String message);
 
-        void onProfileDataChangedSucceeded(String message);
+        void onProfileDataChangedSucceeded(String message, String firstName, String secondName, String phone, String address, long birthdate);
 
         void onProfileDataChangedFailed();
     }

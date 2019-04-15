@@ -73,31 +73,23 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
         if (model.getEvents() == null)
             databaseUtils.getEvents();
         else
-            view.onEventsSucceeded(model.getEvents(), model.getFeedbacks());
+            view.onEventsSucceeded(model.getEvents(), model.getFeedback());
     }
 
     public void changeData(String username, String phone, String address, long age) {
         String[] nameAndSurname = username.split(" ", 2);
 
-        if (!phone.isEmpty() && !phone.equals(model.getUser().getPhone()))
-            model.getUser().setPhone(phone);
-        else phone = null;
+        if (phone.isEmpty() || phone.equals(model.getUser().getPhone())) phone = null;
 
-        if (!address.isEmpty() && !address.equals(model.getUser().getCity()))
-            model.getUser().setCity(address);
-        else address = null;
+        if (address.isEmpty() || address.equals(model.getUser().getCity())) address = null;
 
-        if (!nameAndSurname[0].isEmpty() && !nameAndSurname[0].equals(model.getUser().getFirstName()))
-            model.getUser().setFirstName(nameAndSurname[0]);
-        else nameAndSurname[0] = null;
+        if (nameAndSurname[0].isEmpty() || nameAndSurname[0].equals(model.getUser().getFirstName()))
+            nameAndSurname[0] = null;
 
-        if (!nameAndSurname[1].isEmpty() && !nameAndSurname[1].equals(model.getUser().getLastName()))
-            model.getUser().setLastName(nameAndSurname[1]);
-        else nameAndSurname[1] = null;
+        if (nameAndSurname[1].isEmpty() || nameAndSurname[1].equals(model.getUser().getLastName()))
+            nameAndSurname[1] = null;
 
-        if (age > 0 && age != model.getUser().getBirthDate())
-            model.getUser().setBirthDate(age);
-        else age = 0;
+        if (age <= 0 || age == model.getUser().getBirthDate()) age = 0;
 
         databaseUtils.changeData(nameAndSurname[0], nameAndSurname[1], phone, address, age);
     }
@@ -127,10 +119,10 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
     }
 
     @Override
-    public void onEventsSucceeded(ArrayList<Event> events, ArrayList<Feedback> feedbacks) {
+    public void onEventsSucceeded(ArrayList<Event> events, ArrayList<Feedback> feedback) {
         model.setEvents(events);
-        model.setFeedbacks(feedbacks);
-        view.onEventsSucceeded(events, feedbacks);
+        model.setFeedback(feedback);
+        view.onEventsSucceeded(events, feedback);
     }
 
     @Override
@@ -145,7 +137,23 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
     }
 
     @Override
-    public void onProfileDataChangedSucceeded(String message) {
+    public void onProfileDataChangedSucceeded(String message, String firstName, String secondName, String phone, String address, long birthdate) {
+
+        if (message.contains("phone"))
+            model.getUser().setPhone(phone);
+
+        if (message.contains("birthdate"))
+            model.getUser().setBirthDate(birthdate);
+
+        if (message.contains("firstName"))
+            model.getUser().setFirstName(firstName);
+
+        if (message.contains("secondName"))
+            model.getUser().setLastName(secondName);
+
+        if (message.contains("address"))
+            model.getUser().setCity(address);
+
         view.onDataChangedSucceeded(message);
     }
 

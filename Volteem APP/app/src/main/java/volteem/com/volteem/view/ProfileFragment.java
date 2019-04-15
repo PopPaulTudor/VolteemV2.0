@@ -99,31 +99,33 @@ public class ProfileFragment extends Fragment implements ProfileFragmentPresente
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String choice = arrayAdapter.getItem(which);
-                        assert choice != null;
-                        if (choice.contains("Change")) {
-                            if (PermissionUtil.isStorageReadPermissionGranted(getContext())) {
-                                Intent intent = new Intent(Intent.ACTION_PICK);
-                                intent.setType("image/*");
-                                startActivityForResult(intent, VolteemConstants.GALLERY_INTENT);
+                        if (choice != null) {
+                            if (choice.contains("Change")) {
+                                if (PermissionUtil.isStorageReadPermissionGranted(getContext())) {
+                                    Intent intent = new Intent(Intent.ACTION_PICK);
+                                    intent.setType("image/*");
+                                    startActivityForResult(intent, VolteemConstants.GALLERY_INTENT);
+                                } else {
+                                    Snackbar.make(getView(), "Please allow storage permission", Snackbar.LENGTH_LONG).setAction("Set " +
+                                            "Permission", new
+                                            View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                                                }
+                                            }).show();
+                                }
                             } else {
-                                Snackbar.make(getView(), "Please allow storage permission", Snackbar.LENGTH_LONG).setAction("Set " +
-                                        "Permission", new
-                                        View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                                            }
-                                        }).show();
+                                DisplayPhotoFragment displayPhotoFragment = new DisplayPhotoFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("type", "user");
+                                displayPhotoFragment.setArguments(bundle);
+                                if (getFragmentManager() != null) {
+                                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                    fragmentTransaction.add(R.id.content_frame, displayPhotoFragment).addToBackStack(null);
+                                    fragmentTransaction.commit();
+                                }
                             }
-                        } else {
-                            DisplayPhotoFragment displayPhotoFragment = new DisplayPhotoFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("type", "user");
-                            displayPhotoFragment.setArguments(bundle);
-                            assert getFragmentManager() != null;
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            fragmentTransaction.add(R.id.content_frame, displayPhotoFragment).addToBackStack(null);
-                            fragmentTransaction.commit();
                         }
                     }
                 });
