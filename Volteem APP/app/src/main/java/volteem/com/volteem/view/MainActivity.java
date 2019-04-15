@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setTitle("Events");
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -58,9 +59,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                 drawerLayout.openDrawer(LEFT);
             }
         });
-        replaceFragmentByClass(new HomeFragment());
+        replaceFragmentByClass(new EventsFragment());
         navigationView.setItemIconTintList(null);
-        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        navigationView.getMenu().findItem(R.id.nav_events).setChecked(true);
+        navigationView.getMenu().findItem(R.id.nav_log_out).setCheckable(false);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -91,17 +93,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             String actionBarTitle = getActionBar() == null ? "" : String.valueOf(getActionBar()
                     .getTitle());
             switch (id) {
+                case R.id.nav_events: {
+                    fragment = new EventsFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle = "Events";
+                    break;
+
+                }
                 case R.id.nav_profile: {
                     fragment = new ProfileFragment();
                     replaceFragmentByClass(fragment);
                     actionBarTitle = "Profile";
-                    break;
-
-                }
-                case R.id.nav_home: {
-                    fragment = new HomeFragment();
-                    replaceFragmentByClass(fragment);
-                    actionBarTitle = "Home";
                     break;
 
                 }

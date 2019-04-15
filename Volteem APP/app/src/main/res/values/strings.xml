@@ -33,9 +33,10 @@
     <string name="profile_feedback">Feedback</string>
     <string name="item_log_out">Log out</string>
     <string name="item_settings">Settings</string>
-    <string name="item_home">Home</string>
+    <string name="item_events">Events</string>
     <string name="notifications">Notifications</string>
     <string name="item_news">News</string>
     <string name="no_news">You have no news.</string>
     <string name="register_add_profile_photo">Add profile photo</string>
+    <string name="no_events">No events to display</string>
 </resources>

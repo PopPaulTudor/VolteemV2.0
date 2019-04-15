@@ -1,27 +1,27 @@
 package volteem.com.volteem.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Event {
+public class Event implements Serializable {
 
     private String created_by;
     private String name;
     private String location;
-    private String type;
+    private Type type;
     private String description;
     private String eventID;
     private long startDate, finishDate, deadline;
     private int size;
-    private ArrayList<String> registered_volunteers;
-    private ArrayList<String> accepted_volunteers;
-    private ArrayList<String> requiredQuestions;
-
+    private ArrayList<String> registered_volunteers = new ArrayList<>();
+    private ArrayList<String> accepted_volunteers = new ArrayList<>();
+    private ArrayList<String> requiredQuestions = new ArrayList<>();
 
     public Event() {
 
     }
 
-    public Event(String created_by, String name, String location, long startDate, long finishDate, String type, String eventID,
+    public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
                  String description, long deadline, int size, ArrayList<String> requiredQuestions) {
         this.created_by = created_by;
         this.name = name;
@@ -38,7 +38,7 @@ public class Event {
         this.accepted_volunteers = new ArrayList<>();
     }
 
-    public Event(String created_by, String name, String location, long startDate, long finishDate, String type, String eventID,
+    public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
                  String description, long deadline, int size, ArrayList<String> registered_volunteers, ArrayList<String> accepted_volunteers) {
         this.created_by = created_by;
         this.name = name;
@@ -52,6 +52,11 @@ public class Event {
         this.eventID = eventID;
         this.registered_volunteers = registered_volunteers;
         this.accepted_volunteers = accepted_volunteers;
+        this.requiredQuestions = new ArrayList<>();
+    }
+
+    public enum Type {
+        SPORTS, MUSIC, FESTIVAL, CHARITY, TRAINING, OTHER;
     }
 
     public long getStartDate() {
@@ -94,11 +99,11 @@ public class Event {
         this.location = location;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -157,5 +162,4 @@ public class Event {
     public void setRequiredQuestions(ArrayList<String> requiredQuestions) {
         this.requiredQuestions = requiredQuestions;
     }
-
 }
