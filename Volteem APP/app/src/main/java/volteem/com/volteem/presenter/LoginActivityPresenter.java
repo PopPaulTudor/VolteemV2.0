@@ -6,6 +6,7 @@ import android.util.Log;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.model.view.model.LoginActivityModel;
 import volteem.com.volteem.util.DatabaseUtils;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class LoginActivityPresenter implements Presenter, DatabaseUtils.LoginCallback {
 
@@ -28,7 +29,7 @@ public class LoginActivityPresenter implements Presenter, DatabaseUtils.LoginCal
         if (databaseUtils == null) {
             this.databaseUtils = new DatabaseUtils(this);
         }
-        if (databaseUtils.isUserLoggedIn()) {
+        if (DatabaseUtils.isUserLoggedIn()) {
             view.onSignInCompleted();
         }
     }
@@ -50,7 +51,7 @@ public class LoginActivityPresenter implements Presenter, DatabaseUtils.LoginCal
 
     public void signIn(String eMail, String password) {
         Log.d(TAG, "signing in...");
-        if (!databaseUtils.isUserLoggedIn()) {
+        if (!DatabaseUtils.isUserLoggedIn()) {
             VolteemCommonException volteemCommonException = validateForm(eMail, password);
             if (volteemCommonException != null) {
                 view.onSignInFailed(volteemCommonException);
@@ -63,11 +64,14 @@ public class LoginActivityPresenter implements Presenter, DatabaseUtils.LoginCal
 
     private VolteemCommonException validateForm(String eMail, String password) {
         if (TextUtils.isEmpty(eMail))
-            return new VolteemCommonException("email", "Email address cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (!eMail.contains("@") || !eMail.contains("."))
-            return new VolteemCommonException("email", "Please enter a valid email address.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                    , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_INVALID);
         if (TextUtils.isEmpty(password))
-            return new VolteemCommonException("password", "Password cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         return null;
     }
 

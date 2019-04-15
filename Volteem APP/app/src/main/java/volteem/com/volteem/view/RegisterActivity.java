@@ -29,6 +29,7 @@ import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.RegisterActivityPresenter;
 import volteem.com.volteem.util.PermissionUtil;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterActivityPresenter.View {
 
@@ -172,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
 
     @Override
     public void onRegisterSuccessful() {
-        Toast.makeText(this, "Account successfully created. A verification email has been sent to your email address.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, VolteemConstants.MESSAGE_ACCOUNT_CREATED, Toast.LENGTH_LONG).show();
         startActivityByClass(MainActivity.class);
     }
 
@@ -185,39 +186,39 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     public void onRegisterFailed(@NonNull VolteemCommonException volteemCommonException) {
         String error = volteemCommonException.getMessage();
         switch (volteemCommonException.getCause()) {
-            case "email":
+            case VolteemConstants.EXCEPTION_EMAIL:
                 mEmail.setError(error);
                 mEmail.requestFocus();
                 break;
-            case "password":
+            case VolteemConstants.EXCEPTION_PASSWORD:
                 mPassword.setError(error);
                 mPassword.requestFocus();
                 break;
-            case "confirm_password":
+            case VolteemConstants.EXCEPTION_CONFIRM_PASSWORD:
                 mConfirmPass.setError(error);
                 mConfirmPass.requestFocus();
                 break;
-            case "firstname":
+            case VolteemConstants.EXCEPTION_FIRST_NAME:
                 mFirstName.setError(error);
                 mFirstName.requestFocus();
                 break;
-            case "lastname":
+            case VolteemConstants.EXCEPTION_LAST_NAME:
                 mLastname.setError(error);
                 mLastname.requestFocus();
                 break;
-            case "city":
+            case VolteemConstants.EXCEPTION_CITY:
                 mCity.setError(error);
                 mCity.requestFocus();
                 break;
-            case "phone":
+            case VolteemConstants.EXCEPTION_PHONE:
                 mPhone.setError(error);
                 mPhone.requestFocus();
                 break;
-            case "birthdate":
+            case VolteemConstants.EXCEPTION_BIRTH_DATE:
                 mBirthDate.setError(error);
                 mBirthDate.requestFocus();
                 break;
-            case "gender":
+            case VolteemConstants.EXCEPTION_GENDER:
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;
             default:

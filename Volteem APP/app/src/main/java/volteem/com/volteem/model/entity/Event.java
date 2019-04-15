@@ -21,6 +21,8 @@ public class Event implements Serializable {
 
     }
 
+    public Event(){}
+
     public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
                  String description, long deadline, int size, ArrayList<String> requiredQuestions) {
         this.created_by = created_by;

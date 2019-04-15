@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.model.view.model.RegisterActivityModel;
 import volteem.com.volteem.util.DatabaseUtils;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class RegisterActivityPresenter implements Presenter, DatabaseUtils.RegisterCallback {
 
@@ -49,31 +50,43 @@ public class RegisterActivityPresenter implements Presenter, DatabaseUtils.Regis
                                                 final String gender) {
         //eMail related errors
         if (eMail.isEmpty())
-            return new VolteemCommonException("email", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (!eMail.contains("@") || !eMail.contains("."))
-            return new VolteemCommonException("email", "Please enter a valid email address.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                    , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_INVALID);
         //password related errors
         if (password.isEmpty())
-            return new VolteemCommonException("password", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (password.length() < 6)
-            return new VolteemCommonException("password", "Your password must be at least 6 characters long.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
+                    , VolteemConstants.EXCEPTION_PASSWORD_LENGTH);
         if (confirmPassword.isEmpty())
-            return new VolteemCommonException("confirm_password", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_CONFIRM_PASSWORD,
+                    VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (!TextUtils.equals(password, confirmPassword))
-            return new VolteemCommonException("confirm_password", "Passwords do not match");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_CONFIRM_PASSWORD
+                    , VolteemConstants.EXCEPTION_MESSAGE_PASSWORDS_NOT_MATCH);
         // other errors
         if (firstName.isEmpty())
-            return new VolteemCommonException("firstname", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_FIRST_NAME
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (lastName.isEmpty())
-            return new VolteemCommonException("lastname", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_LAST_NAME
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (birthdate == 0)
-            return new VolteemCommonException("birthdate", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_BIRTH_DATE
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (phone.isEmpty())
-            return new VolteemCommonException("phone", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_PHONE
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (city.isEmpty())
-            return new VolteemCommonException("city", "This field cannot be empty.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_CITY
+                    , VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
         if (TextUtils.equals(gender, "Gender"))
-            return new VolteemCommonException("gender", "Please select a gender.");
+            return new VolteemCommonException(VolteemConstants.EXCEPTION_GENDER
+                    , VolteemConstants.EXCEPTION_MESSAGE_GENDER_EMPTY);
         return null;
     }
 
@@ -85,7 +98,7 @@ public class RegisterActivityPresenter implements Presenter, DatabaseUtils.Regis
             view.onRegisterFailed(volteemCommonException);
             return;
         }
-        databaseUtils.registerNewUser(eMail, password, firstName, lastName, birthdate, city, phone, gender,uri);
+        databaseUtils.registerNewUser(eMail, password, firstName, lastName, birthdate, city, phone, gender, uri);
     }
 
     @Override

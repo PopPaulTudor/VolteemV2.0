@@ -2,8 +2,6 @@ package volteem.com.volteem.callback;
 
 import android.net.Uri;
 
-import java.io.Serializable;
-
 import volteem.com.volteem.model.entity.Event;
 
 public interface ActionListener {
@@ -17,7 +15,7 @@ public interface ActionListener {
         void onClickEvent(Event event, Uri uri);
     }
 
-    interface EventsActionListener extends Serializable {
+    interface EventsActionListener {
         void onEventActivityDetached(boolean hasActionHappened);
     }
 }

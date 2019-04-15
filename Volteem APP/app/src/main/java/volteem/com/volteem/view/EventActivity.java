@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import volteem.com.volteem.R;
@@ -85,7 +86,7 @@ public class EventActivity extends AppCompatActivity implements EventActivityPre
 
     @Override
     public void loadUI(Event currentEvent, Uri uri) {
-        Picasso.get().load(uri).fit().centerCrop().into(collapsingToolbarImage);
+        Glide.with(collapsingToolbarImage).load(uri).centerCrop().into(collapsingToolbarImage);
         collapsingToolbarLayout.setTitle(currentEvent.getName());
         mEventName.setText(currentEvent.getName());
         mEventLocation.setText(currentEvent.getLocation());

@@ -112,19 +112,23 @@ public class DatabaseUtils {
                             if (exception != null) {
                                 if (exception instanceof FirebaseAuthException) {
                                     if (exception.getMessage().contains("password")) {
-                                        volteemCommonException = new VolteemCommonException("password", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
+                                                , exception.getMessage());
                                     } else if (exception.getMessage().contains("email") ||
                                             exception.getMessage().contains("account") ||
                                             exception.getMessage().contains("user")) {
-                                        volteemCommonException = new VolteemCommonException("email", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                                , exception.getMessage());
                                     } else {
-                                        volteemCommonException = new VolteemCommonException("other", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                                , exception.getMessage());
                                         Log.e(TAG, exception.getMessage());
                                     }
                                 } else {
                                     // In this case there can be any Exception
                                     Log.e(TAG, exception.getMessage());
-                                    volteemCommonException = new VolteemCommonException("other", exception.getMessage());
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                            , exception.getMessage());
                                 }
                             }
                             loginCallback.onSignInFailed(volteemCommonException);
@@ -177,12 +181,15 @@ public class DatabaseUtils {
                         } else {
                             Log.d(TAG, "creating user: failed");
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                volteemCommonException = new VolteemCommonException("email", "Email address is already in use.");
+                                volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                        , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_ALREADY_IN_USE);
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    volteemCommonException = new VolteemCommonException("email", "Please enter a valid email address.");
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                            , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_INVALID);
                                 } else {
-                                    volteemCommonException = new VolteemCommonException("other", Objects.requireNonNull(task.getException()).getMessage());
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                            , Objects.requireNonNull(task.getException()).getMessage());
                                     Log.w("Error registering ", task.getException());
                                 }
                             }

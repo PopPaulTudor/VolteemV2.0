@@ -32,6 +32,7 @@ import volteem.com.volteem.callback.ActionListener;
 import volteem.com.volteem.model.entity.Event;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.EventsFragmentPresenter;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class EventsFragment extends Fragment implements SwipeRefreshLayout
         .OnRefreshListener, ActionListener.EventAdapterListener, EventsFragmentPresenter.View, ActionListener.EventsActionListener {
@@ -126,11 +127,8 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout
     public void onClickEvent(Event event, Uri uri) {
         Intent intent = new Intent(getActivity(), EventActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("volteem_event", event);
-        bundle.putParcelable("volteem_image", uri);
-        if(eventsActionListener == null)
-            Log.e("interface is", "null");
-       // bundle.putSerializable("volteem_interface", eventsActionListener);
+        bundle.putSerializable(VolteemConstants.INTENT_EXTRA_EVENT, event);
+        bundle.putParcelable(VolteemConstants.INTENT_EXTRA_IMAGE_URI, uri);
         intent.putExtras(bundle);
         startActivity(intent);
     }
