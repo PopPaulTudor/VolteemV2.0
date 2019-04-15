@@ -15,6 +15,7 @@ import android.widget.Toast;
 import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.LoginActivityPresenter;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class LoginActivity extends AppCompatActivity implements LoginActivityPresenter.View {
 
@@ -124,11 +125,11 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityPre
         mPassword.setError(null);
         String error = volteemCommonException.getMessage();
         switch (volteemCommonException.getCause()) {
-            case "email":
+            case VolteemConstants.EXCEPTION_EMAIL:
                 mEmail.setError(error);
                 mEmail.requestFocus();
                 break;
-            case "password":
+            case VolteemConstants.EXCEPTION_PASSWORD:
                 mPassword.setError(error);
                 mPassword.requestFocus();
                 break;

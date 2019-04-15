@@ -20,7 +20,7 @@ import volteem.com.volteem.R;
 import volteem.com.volteem.callback.ActionListener;
 import volteem.com.volteem.model.entity.NewsMessage;
 import volteem.com.volteem.util.CalendarUtils;
-import volteem.com.volteem.util.VolteemApp;
+import volteem.com.volteem.util.VolteemUtils;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
@@ -44,7 +44,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @Override
     public void onBindViewHolder(final NewsAdapter.NewsViewHolder holder, final int position) {
 
-        final SharedPreferences prefs = VolteemApp.getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        final SharedPreferences prefs = VolteemUtils.getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
         if (newsList.get(holder.getAdapterPosition()).isStarred()) {
             holder.starredIcon.setVisibility(View.VISIBLE);

@@ -1,6 +1,8 @@
 package volteem.com.volteem.model.view.model;
 
-public class SettingsFragmentModel {
+import android.arch.lifecycle.ViewModel;
+
+public class SettingsFragmentModel extends ViewModel {
 
     private boolean notificationsState;
 

@@ -28,7 +28,7 @@ public final class ImageUtils {
         byte[] byteArray;
         InputStream imageStream = null;
         try {
-            imageStream = VolteemApp.getContext().getContentResolver().openInputStream(fileUri);
+            imageStream = VolteemUtils.getContext().getContentResolver().openInputStream(fileUri);
         } catch (FileNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }

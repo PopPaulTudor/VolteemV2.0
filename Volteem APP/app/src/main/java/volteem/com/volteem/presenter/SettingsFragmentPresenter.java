@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import volteem.com.volteem.model.view.model.SettingsFragmentModel;
-import volteem.com.volteem.util.VolteemApp;
+import volteem.com.volteem.util.VolteemUtils;
 
 public class SettingsFragmentPresenter implements Presenter {
     private View view;
@@ -14,7 +14,7 @@ public class SettingsFragmentPresenter implements Presenter {
     public SettingsFragmentPresenter(View view) {
         this.view = view;
         this.model = new SettingsFragmentModel();
-        this.preferences = VolteemApp.getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        this.preferences = VolteemUtils.getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
     }
 
     @Override
