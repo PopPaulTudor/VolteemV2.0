@@ -120,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     actionBarTitle = "Settings";
                     break;
                 }
+                case R.id.nav_about:
+                {
+                    fragment= new AboutFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle="About";
+                    break;
+                }
 
                 case R.id.nav_log_out: {
 

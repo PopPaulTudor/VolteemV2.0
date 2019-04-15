@@ -17,7 +17,7 @@ public class Event implements Serializable {
     private ArrayList<String> accepted_volunteers = new ArrayList<>();
     private ArrayList<String> requiredQuestions = new ArrayList<>();
 
-    public Event() {
+    public Event(String s, String s1, String s2, int i, int i1, String s3, String s4, int i2, int i3, Object o) {
 
     }
 
