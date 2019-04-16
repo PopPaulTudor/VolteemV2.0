@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,10 +49,9 @@ public class DatabaseUtils {
     private RegisterCallback registerCallback;
     private NewsCallback newsCallback;
     private ProfileCallBack profileCallBack;
-    private EventsCallback eventsCallback;
     private DisplayPhotoCallBack displayPhotoCallBack;
+
     private ArrayList<NewsMessage> newsList;
-    private ArrayList<Event> mEventsList;
 
 
     public DatabaseUtils(LoginCallback loginCallback) {
@@ -77,22 +77,11 @@ public class DatabaseUtils {
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
-    public DatabaseUtils(EventsCallback eventsCallback) {
-        this.eventsCallback = eventsCallback;
-        this.mAuth = FirebaseAuth.getInstance();
-        this.mDatabase = FirebaseDatabase.getInstance().getReference();
-    }
-
     public DatabaseUtils(DisplayPhotoCallBack displayPhotoCallBack) {
         this.displayPhotoCallBack = displayPhotoCallBack;
         this.mAuth = FirebaseAuth.getInstance();
     }
 
-    /**
-     * signIn method takes in two Strings (email & password) and performs the Firebase Login.
-     * user eMail * @param eMail
-     * user password * @param password
-     */
     public void signIn(String eMail, String password) {
         if (mAuth.getCurrentUser() != null) {
             loginCallback.onSignInSucceeded();
@@ -112,23 +101,19 @@ public class DatabaseUtils {
                             if (exception != null) {
                                 if (exception instanceof FirebaseAuthException) {
                                     if (exception.getMessage().contains("password")) {
-                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
-                                                , exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException("password", exception.getMessage());
                                     } else if (exception.getMessage().contains("email") ||
                                             exception.getMessage().contains("account") ||
                                             exception.getMessage().contains("user")) {
-                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
-                                                , exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException("email", exception.getMessage());
                                     } else {
-                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
-                                                , exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException("other", exception.getMessage());
                                         Log.e(TAG, exception.getMessage());
                                     }
                                 } else {
                                     // In this case there can be any Exception
                                     Log.e(TAG, exception.getMessage());
-                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
-                                            , exception.getMessage());
+                                    volteemCommonException = new VolteemCommonException("other", exception.getMessage());
                                 }
                             }
                             loginCallback.onSignInFailed(volteemCommonException);
@@ -171,25 +156,20 @@ public class DatabaseUtils {
 
                                 StorageReference mStorage = FirebaseStorage.getInstance().getReference();
                                 StorageReference filePath = mStorage.child("Photos").child("User").child(userID);
-
-                                filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
                                 if (uri != null)
-                                    filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
+                                    filePath.putBytes(ImageUtils.compressImage(uri, VolteemApp.getContext().getResources()));
 
                             }
                             registerCallback.onRegisterSucceeded();
                         } else {
                             Log.d(TAG, "creating user: failed");
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
-                                        , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_ALREADY_IN_USE);
+                                volteemCommonException = new VolteemCommonException("email", "Email address is already in use.");
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
-                                            , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_INVALID);
+                                    volteemCommonException = new VolteemCommonException("email", "Please enter a valid email address.");
                                 } else {
-                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
-                                            , Objects.requireNonNull(task.getException()).getMessage());
+                                    volteemCommonException = new VolteemCommonException("other", Objects.requireNonNull(task.getException()).getMessage());
                                     Log.w("Error registering ", task.getException());
                                 }
                             }
@@ -238,32 +218,10 @@ public class DatabaseUtils {
                         "Could not get information for profile"));
             }
         };
-        assert firebaseUser != null;
-        mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
-        mDatabase.removeEventListener(mVolunteerProfileListener);
-    }
-
-    public void getEventsList() {
-        mDatabase.child("events").orderByChild("users/" + mAuth.getUid()).equalTo(null)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mEventsList = new ArrayList<>();
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            final Event currentEvent = data.getValue(Event.class);
-                            if (currentEvent.getDeadline() > CalendarUtils.getCurrentTimeInMillis()) {
-                                mEventsList.add(currentEvent);
-                            }
-                        }
-                        eventsCallback.onEventsLoadSuccessful(mEventsList);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e("VolEventsF: loadEvents", databaseError.getMessage());
-                        eventsCallback.onEventsLoadFailed(new VolteemCommonException("unknown", databaseError.getMessage()));
-                    }
-                });
+        if(firebaseUser != null){
+            mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
+            mDatabase.removeEventListener(mVolunteerProfileListener);
+        }
     }
 
     public void getProfilePicture() {
@@ -339,7 +297,7 @@ public class DatabaseUtils {
         StorageReference mStorage = FirebaseStorage.getInstance().getReference();
         StorageReference filePath = mStorage.child("Photos").child("User").child(user.getUid());
         if (uri != null) {
-            filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
+            filePath.putBytes(ImageUtils.compressImage(uri, VolteemApp.getContext().getResources()));
             profileCallBack.onProfilePhotoChangedSucceeded("Succeeded");
 
         }
@@ -368,7 +326,8 @@ public class DatabaseUtils {
             message = message + " " + "address";
         }
 
-        if (!message.equals("")) profileCallBack.onProfileDataChangedSucceeded(message);
+        if (!message.equals(""))
+            profileCallBack.onProfileDataChangedSucceeded(message, firstName, secondName, phone, address, birthdate);
         else profileCallBack.onProfileDataChangedFailed();
     }
 
@@ -416,18 +375,12 @@ public class DatabaseUtils {
 
         void onProfilePhotoChangedSucceeded(String message);
 
-        void onProfileDataChangedSucceeded(String message);
+        void onProfileDataChangedSucceeded(String message, String firstName, String secondName, String phone, String address, long birthdate);
 
         void onProfileDataChangedFailed();
     }
 
     public interface DisplayPhotoCallBack {
         void onUserIdSucceeded(String userId);
-    }
-
-    public interface EventsCallback {
-        void onEventsLoadSuccessful(ArrayList<Event> eventsList);
-
-        void onEventsLoadFailed(VolteemCommonException exception);
     }
 }

@@ -14,14 +14,13 @@ public class ProfileFragmentModel extends ViewModel {
     private User user;
     private Uri uri;
     private ArrayList<Event> events;
-    private ArrayList<Feedback> feedbacks;
+    private ArrayList<Feedback> feedback;
 
-    public ProfileFragmentModel(User user, Uri uri,ArrayList<Event> events,ArrayList<Feedback> feedbacks)
-    {
+    public ProfileFragmentModel(User user, Uri uri, ArrayList<Event> events, ArrayList<Feedback> feedback) {
         this.user = user;
         this.uri = uri;
-        this.events=events;
-        this.feedbacks=feedbacks;
+        this.events = events;
+        this.feedback = feedback;
     }
 
     public User getUser() {
@@ -48,11 +47,11 @@ public class ProfileFragmentModel extends ViewModel {
         this.events = events;
     }
 
-    public ArrayList<Feedback> getFeedbacks() {
-        return feedbacks;
+    public ArrayList<Feedback> getFeedback() {
+        return feedback;
     }
 
-    public void setFeedbacks(ArrayList<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
+    public void setFeedback(ArrayList<Feedback> feedback) {
+        this.feedback = feedback;
     }
 }
