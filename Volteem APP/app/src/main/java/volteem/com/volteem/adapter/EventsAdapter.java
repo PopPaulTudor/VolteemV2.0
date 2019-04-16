@@ -60,6 +60,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
     public void onBindViewHolder(@NonNull final EventsAdapter.EventViewHolder holder, final int
             position) {
 
+
         holder.cardName.setText(eventsList.get(position).getName());
         holder.cardLocation.setText(eventsList.get(position).getLocation());
         holder.cardDate.setText(CalendarUtils.getStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getDeadline()));
@@ -68,7 +69,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
         Glide.with(holder.cardImage).load(uri).centerCrop().into(holder.cardImage);
         imageList.add(holder.getAdapterPosition(), uri);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        storageRef.child("Photos").child("Event").child(eventsList.get(position).getEventID())
+        storageRef.child("Photos").child("Event").child(eventsList.get(position).getEventID() + ".jpg")
                 .getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {

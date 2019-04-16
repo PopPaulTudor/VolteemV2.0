@@ -1,14 +1,8 @@
 package volteem.com.volteem.view;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,14 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import volteem.com.volteem.R;
@@ -35,21 +27,19 @@ import volteem.com.volteem.presenter.EventsFragmentPresenter;
 import volteem.com.volteem.util.VolteemConstants;
 
 public class EventsFragment extends Fragment implements SwipeRefreshLayout
-        .OnRefreshListener, ActionListener.EventAdapterListener, EventsFragmentPresenter.View, ActionListener.EventsActionListener {
+        .OnRefreshListener, ActionListener.EventAdapterListener, EventsFragmentPresenter.View {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView noEventsTextView;
     private int mMediumAnimTime;
     private EventsFragmentPresenter presenter;
     private FloatingActionButton addEventsButton;
-    private ActionListener.EventsActionListener eventsActionListener;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events, container, false);
 
-        eventsActionListener = this;
         presenter = new EventsFragmentPresenter(this);
         addEventsButton = view.findViewById(R.id.add_event);
         recyclerView = view.findViewById(R.id.RecViewVolEvents);
@@ -82,7 +72,8 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout
         addEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                startActivity(intent);
             }
         });
         presenter.onCreate();
@@ -161,11 +152,5 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
         }
-    }
-
-    @Override
-    public void onEventActivityDetached(boolean hasActionHappened) {
-        if(hasActionHappened)
-            presenter.getEventsList();
     }
 }

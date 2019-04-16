@@ -45,4 +45,5 @@
     <string name="profile_adapter_no_feedback">No feedback</string>
     <string name="view_image">View image</string>
     <string name="change_image">Change image</string>
+    <string name="title_create_event_activity">Create Event</string>
 </resources>

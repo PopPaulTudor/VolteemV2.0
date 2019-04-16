@@ -14,8 +14,4 @@ public interface ActionListener {
 
         void onClickEvent(Event event, Uri uri);
     }
-
-    interface EventsActionListener {
-        void onEventActivityDetached(boolean hasActionHappened);
-    }
 }

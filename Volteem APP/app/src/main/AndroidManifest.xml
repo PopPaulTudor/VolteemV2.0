@@ -17,8 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".view.CreateEventActivity"
+            android:label="@string/title_create_event_activity" />
+        <activity
             android:name=".view.EventActivity"
-            android:theme="@style/Theme.Design.NoActionBar"></activity>
+            android:theme="@style/Theme.Design.NoActionBar" />
         <activity android:name=".view.RegisterActivity" />
         <activity
             android:name=".view.LoginActivity"
@@ -31,7 +34,7 @@
         </activity>
         <activity
             android:name=".view.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>
