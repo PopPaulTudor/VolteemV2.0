@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,8 +49,10 @@ public class DatabaseUtils {
     private NewsCallback newsCallback;
     private ProfileCallBack profileCallBack;
     private DisplayPhotoCallBack displayPhotoCallBack;
+    private EventsCallback eventsCallback;
 
     private ArrayList<NewsMessage> newsList;
+    private ArrayList<Event> mEventsList;
 
 
     public DatabaseUtils(LoginCallback loginCallback) {
@@ -81,6 +82,18 @@ public class DatabaseUtils {
         this.displayPhotoCallBack = displayPhotoCallBack;
         this.mAuth = FirebaseAuth.getInstance();
     }
+
+    public DatabaseUtils(EventsCallback eventsCallback) {
+        this.eventsCallback = eventsCallback;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    /**
+     * signIn method takes in two Strings (email & password) and performs the Firebase Login.
+     * user eMail * @param eMail
+     * user password * @param password
+     */
 
     public void signIn(String eMail, String password) {
         if (mAuth.getCurrentUser() != null) {
@@ -157,7 +170,7 @@ public class DatabaseUtils {
                                 StorageReference mStorage = FirebaseStorage.getInstance().getReference();
                                 StorageReference filePath = mStorage.child("Photos").child("User").child(userID);
                                 if (uri != null)
-                                    filePath.putBytes(ImageUtils.compressImage(uri, VolteemApp.getContext().getResources()));
+                                    filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
 
                             }
                             registerCallback.onRegisterSucceeded();
@@ -218,7 +231,7 @@ public class DatabaseUtils {
                         "Could not get information for profile"));
             }
         };
-        if(firebaseUser != null){
+        if (firebaseUser != null) {
             mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(mVolunteerProfileListener);
             mDatabase.removeEventListener(mVolunteerProfileListener);
         }
@@ -242,7 +255,7 @@ public class DatabaseUtils {
         });
     }
 
-    public void getEvents() {
+    public void getProfileEvents() {
         final String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         mDatabase.child("events").orderByChild("users/" + userId + "/flag").equalTo(VolteemConstants.VOLUNTEER_EVENT_FLAG_DONE)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -257,18 +270,20 @@ public class DatabaseUtils {
                                 final Event event = eventSnapshot.getValue(Event.class);
                                 mPastEventsList.add(event);
 
-                                mDatabase.child("users").child("volunteers").child(userId).child("feedback")
-                                        .child(event.getEventID()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        feedbacks.add(new Feedback(event.getEventID(), dataSnapshot.getValue(String.class)));
-                                    }
+                                if (event != null) {
+                                    mDatabase.child("users").child("volunteers").child(userId).child("feedback")
+                                            .child(event.getEventID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            feedbacks.add(new Feedback(event.getEventID(), dataSnapshot.getValue(String.class)));
+                                        }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        profileCallBack.onEventsFailed(new VolteemCommonException("Events Profile", databaseError.getMessage()));
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            profileCallBack.onEventsFailed(new VolteemCommonException("Events Profile", databaseError.getMessage()));
+                                        }
+                                    });
+                                }
                             }
                         }
                         if (mPastEventsList.isEmpty()) {
@@ -284,7 +299,6 @@ public class DatabaseUtils {
                             profileCallBack.onEventsSucceeded(mPastEventsList, feedbacks);
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         profileCallBack.onEventsFailed(new VolteemCommonException("Events Profile", "Failed"));
@@ -292,37 +306,42 @@ public class DatabaseUtils {
                 });
     }
 
-    public void changePhoto(Uri uri) {
+    public void changeProfilePhoto(Uri uri) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         StorageReference mStorage = FirebaseStorage.getInstance().getReference();
-        StorageReference filePath = mStorage.child("Photos").child("User").child(user.getUid());
+        StorageReference filePath = null;
+        if (user != null) {
+            filePath = mStorage.child("Photos").child("User").child(user.getUid());
+        }
         if (uri != null) {
-            filePath.putBytes(ImageUtils.compressImage(uri, VolteemApp.getContext().getResources()));
+            if (filePath != null) {
+                filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
+            }
             profileCallBack.onProfilePhotoChangedSucceeded("Succeeded");
 
         }
     }
 
-    public void changeData(String firstName, String secondName, String phone, String address, long birthdate) {
+    public void changeProfileData(String firstName, String secondName, String phone, String address, long birthdate) {
         String message = "";
         if (birthdate != 0) {
-            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("birthDate").setValue(birthdate);
+            mDatabase.child("users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("birthDate").setValue(birthdate);
             message = message + " " + "birthdate";
         }
         if (firstName != null) {
-            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("firstName").setValue(firstName);
+            mDatabase.child("users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("firstName").setValue(firstName);
             message = message + " " + "firstName";
         }
         if (secondName != null) {
-            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("lastName").setValue(secondName);
+            mDatabase.child("users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("lastName").setValue(secondName);
             message = message + " " + "secondName";
         }
         if (phone != null) {
-            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("phone").setValue(phone);
+            mDatabase.child("users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("phone").setValue(phone);
             message = message + " " + "phone";
         }
         if (address != null) {
-            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("city").setValue(address);
+            mDatabase.child("users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("city").setValue(address);
             message = message + " " + "address";
         }
 
@@ -334,9 +353,35 @@ public class DatabaseUtils {
 
     public void getUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        displayPhotoCallBack.onUserIdSucceeded(user.getUid());
+        if (user != null) {
+            displayPhotoCallBack.onUserIdSucceeded(user.getUid());
+        }
 
     }
+
+    public void getEventsList() {
+        mDatabase.child("events").orderByChild("users/" + mAuth.getUid()).equalTo(null)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mEventsList = new ArrayList<>();
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            final Event currentEvent = data.getValue(Event.class);
+                            if (currentEvent.getDeadline() > CalendarUtils.getCurrentTimeInMillis()) {
+                                mEventsList.add(currentEvent);
+                            }
+                        }
+                        eventsCallback.onEventsLoadSuccessful(mEventsList);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("VolEventsF: loadEvents", databaseError.getMessage());
+                        eventsCallback.onEventsLoadFailed(new VolteemCommonException("unknown", databaseError.getMessage()));
+                    }
+                });
+    }
+
 
     public static boolean isUserLoggedIn() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
@@ -383,4 +428,12 @@ public class DatabaseUtils {
     public interface DisplayPhotoCallBack {
         void onUserIdSucceeded(String userId);
     }
+
+    public interface EventsCallback {
+        void onEventsLoadSuccessful(ArrayList<Event> eventsList);
+
+        void onEventsLoadFailed(VolteemCommonException exception);
+    }
+
+
 }

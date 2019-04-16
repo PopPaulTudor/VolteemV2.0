@@ -49,7 +49,7 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
     }
 
     public void changePhoto(Uri uri) {
-        databaseUtils.changePhoto(uri);
+        databaseUtils.changeProfilePhoto(uri);
     }
 
     private void getProfileInformation() {
@@ -71,7 +71,7 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
 
     private void getEvents() {
         if (model.getEvents() == null)
-            databaseUtils.getEvents();
+            databaseUtils.getProfileEvents();
         else
             view.onEventsSucceeded(model.getEvents(), model.getFeedback());
     }
@@ -91,7 +91,7 @@ public class ProfileFragmentPresenter implements Presenter, DatabaseUtils.Profil
 
         if (age <= 0 || age == model.getUser().getBirthDate()) age = 0;
 
-        databaseUtils.changeData(nameAndSurname[0], nameAndSurname[1], phone, address, age);
+        databaseUtils.changeProfileData(nameAndSurname[0], nameAndSurname[1], phone, address, age);
     }
 
     @Override
