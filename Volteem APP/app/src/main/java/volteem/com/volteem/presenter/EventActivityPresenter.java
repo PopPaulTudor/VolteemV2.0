@@ -16,16 +16,14 @@ public class EventActivityPresenter implements Presenter {
     public EventActivityPresenter(View view, Bundle bundleExtras) {
         this.view = view;
         this.bundleExtras = bundleExtras;
-        this.model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT),
-                (Uri) bundleExtras.getParcelable(VolteemConstants.INTENT_EXTRA_IMAGE_URI));
+        this.model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT));
         this.hasActionHappened = false;
     }
 
     @Override
     public void onCreate() {
         if (model == null) {
-            model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT),
-                    (Uri) bundleExtras.getParcelable(VolteemConstants.INTENT_EXTRA_IMAGE_URI));
+            model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT));
         } else {
             if (model.getEvent() != null) {
                 view.loadUI(model.getEvent(), model.getImageUri());

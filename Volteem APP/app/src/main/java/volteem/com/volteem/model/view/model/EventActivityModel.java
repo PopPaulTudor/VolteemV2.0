@@ -9,9 +9,9 @@ public class EventActivityModel extends ViewModel {
     private Event event;
     private Uri imageUri;
 
-    public EventActivityModel(Event event, Uri imageUri) {
+    public EventActivityModel(Event event) {
         this.event = event;
-        this.imageUri = imageUri;
+        this.imageUri = Uri.parse(event.getImageUri());
     }
 
     public Event getEvent() {

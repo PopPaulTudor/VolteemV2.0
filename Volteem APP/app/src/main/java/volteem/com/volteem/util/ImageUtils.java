@@ -25,6 +25,8 @@ public final class ImageUtils {
     private static final String TAG = "ImageUtils";
 
     public static byte[] compressImage(Uri fileUri, Resources resources) {
+        if (resources == null)
+            resources = VolteemUtils.getContext().getResources();
         byte[] byteArray;
         InputStream imageStream = null;
         try {

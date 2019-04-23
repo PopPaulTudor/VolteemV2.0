@@ -71,4 +71,25 @@ public class VolteemConstants {
 
     public static final String MESSAGE_ACCOUNT_CREATED = "Account successfully created. A verification email has been sent to your email address.";
 
+    public static final String EXCEPTION_EVENT_NAME = "EXCEPTION_NAME";
+
+    public static final String EXCEPTION_EVENT_LOCATION = "EXCEPTION_LOCATION";
+
+    public static final String EXCEPTION_EVENT_START_DATE = "EXCEPTION_START_DATE";
+
+    public static final String EXCEPTION_EVENT_FINISH_DATE = "EXCEPTION_FINISH_DATE";
+
+    public static final String EXCEPTION_MESSAGE_FINISH_DATE_BEFORE_START_DATE = "The finish date cannot be before the start date.";
+
+    public static final String EXCEPTION_MESSAGE_FINISH_DATE_BEFORE_DEADLINE = "The finish date cannot be before the deadline";
+
+    public static final String EXCEPTION_EVENT_DEADLINE = "EXCEPTION_DEADLINE";
+
+    public static final String EXCEPTION_MESSAGE_DEADLINE_AFTER_START_DATE = "The deadline cannot be after the start date.";
+
+    public static final String EXCEPTION_EVENT_TYPE = "EXCEPTION_TYPE";
+
+    public static final String EXCEPTION_EVENT_DESCRIPTION = "EXCEPTION_DESCRIPTION";
+
+    public static final String EXCEPTION_EVENT_SIZE = "EXCEPTION_SIZE";
 }

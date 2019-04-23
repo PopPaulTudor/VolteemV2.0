@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
     private List<String> gender = new ArrayList<>();
     private String mGender = "Gender";
     private RegisterActivityPresenter presenter;
-    private Uri uri=null;
+    private Uri uri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
         mFirstName = findViewById(R.id.register_first_name);
         mLastname = findViewById(R.id.register_last_name);
         mConfirmPass = findViewById(R.id.register_password_confirm);
-        circleImageView= findViewById(R.id.register_add_photo);
+        circleImageView = findViewById(R.id.register_add_photo);
 
         mBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 String lastName = mLastname.getText().toString();
                 String city = mCity.getText().toString();
                 String phone = mPhone.getText().toString();
-                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender,uri);
+                presenter.registerUser(eMail, password, confirmPassword, firstName, lastName, birthdate, city, phone, mGender, uri);
             }
         });
 
@@ -132,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 if (PermissionUtil.isStorageReadPermissionGranted(getApplicationContext())) {
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType("image/*");
-                    startActivityForResult(intent, GALLERY_INTENT);
+                    startActivityForResult(intent, VolteemConstants.GALLERY_INTENT);
 
                 } else {
                     Snackbar.make(view, "Please allow storage permission", Snackbar.LENGTH_LONG).setAction("Set Permission", new View.OnClickListener() {
@@ -144,7 +144,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
                 }
             }
         });
-
     }
 
     private void startActivityByClass(Class activity) {
@@ -233,7 +232,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterActiv
         if (requestCode == GALLERY_INTENT && (data != null)) {
             uri = data.getData();
             Glide.with(this).load(uri).into(circleImageView);
-
         }
     }
 }

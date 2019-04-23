@@ -23,12 +23,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
+import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.Event;
 import volteem.com.volteem.model.entity.Feedback;
 import volteem.com.volteem.model.entity.NewsMessage;
@@ -50,10 +52,10 @@ public class DatabaseUtils {
     private ProfileCallBack profileCallBack;
     private DisplayPhotoCallBack displayPhotoCallBack;
     private EventsCallback eventsCallback;
-
+    private CreateEventCallback createEventCallback;
     private ArrayList<NewsMessage> newsList;
     private ArrayList<Event> mEventsList;
-
+    private ArrayList<Uri> mUriList;
 
     public DatabaseUtils(LoginCallback loginCallback) {
         this.loginCallback = loginCallback;
@@ -89,12 +91,15 @@ public class DatabaseUtils {
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+    public DatabaseUtils(CreateEventCallback createEventCallback) {
+        this.createEventCallback = createEventCallback;
+    }
+
     /**
      * signIn method takes in two Strings (email & password) and performs the Firebase Login.
      * user eMail * @param eMail
      * user password * @param password
      */
-
     public void signIn(String eMail, String password) {
         if (mAuth.getCurrentUser() != null) {
             loginCallback.onSignInSucceeded();
@@ -114,19 +119,23 @@ public class DatabaseUtils {
                             if (exception != null) {
                                 if (exception instanceof FirebaseAuthException) {
                                     if (exception.getMessage().contains("password")) {
-                                        volteemCommonException = new VolteemCommonException("password", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_PASSWORD
+                                                , exception.getMessage());
                                     } else if (exception.getMessage().contains("email") ||
                                             exception.getMessage().contains("account") ||
                                             exception.getMessage().contains("user")) {
-                                        volteemCommonException = new VolteemCommonException("email", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                                , exception.getMessage());
                                     } else {
-                                        volteemCommonException = new VolteemCommonException("other", exception.getMessage());
+                                        volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                                , exception.getMessage());
                                         Log.e(TAG, exception.getMessage());
                                     }
                                 } else {
                                     // In this case there can be any Exception
                                     Log.e(TAG, exception.getMessage());
-                                    volteemCommonException = new VolteemCommonException("other", exception.getMessage());
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                            , exception.getMessage());
                                 }
                             }
                             loginCallback.onSignInFailed(volteemCommonException);
@@ -166,23 +175,25 @@ public class DatabaseUtils {
                                 user.updateProfile(mProfileUpdate);
                                 user.sendEmailVerification();
 
-
                                 StorageReference mStorage = FirebaseStorage.getInstance().getReference();
                                 StorageReference filePath = mStorage.child("Photos").child("User").child(userID);
+
                                 if (uri != null)
                                     filePath.putBytes(ImageUtils.compressImage(uri, VolteemUtils.getContext().getResources()));
-
                             }
                             registerCallback.onRegisterSucceeded();
                         } else {
                             Log.d(TAG, "creating user: failed");
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                volteemCommonException = new VolteemCommonException("email", "Email address is already in use.");
+                                volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                        , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_ALREADY_IN_USE);
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    volteemCommonException = new VolteemCommonException("email", "Please enter a valid email address.");
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_EMAIL
+                                            , VolteemConstants.EXCEPTION_EMAIL_MESSAGE_INVALID);
                                 } else {
-                                    volteemCommonException = new VolteemCommonException("other", Objects.requireNonNull(task.getException()).getMessage());
+                                    volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                            , Objects.requireNonNull(task.getException()).getMessage());
                                     Log.w("Error registering ", task.getException());
                                 }
                             }
@@ -206,7 +217,8 @@ public class DatabaseUtils {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                VolteemCommonException volteemCommonException = new VolteemCommonException("unknown", databaseError.getMessage());
+                VolteemCommonException volteemCommonException = new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                        , databaseError.getMessage());
                 newsCallback.onDataRetrieveFailed(volteemCommonException);
             }
         });
@@ -299,6 +311,7 @@ public class DatabaseUtils {
                             profileCallBack.onEventsSucceeded(mPastEventsList, feedbacks);
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         profileCallBack.onEventsFailed(new VolteemCommonException("Events Profile", "Failed"));
@@ -350,16 +363,21 @@ public class DatabaseUtils {
         else profileCallBack.onProfileDataChangedFailed();
     }
 
-
     public void getUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             displayPhotoCallBack.onUserIdSucceeded(user.getUid());
         }
-
     }
 
     public void getEventsList() {
+        final ArrayList<Uri> imageUris = new ArrayList<>();
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_sports));
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_music));
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_festival));
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_charity));
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_training));
+        imageUris.add(VolteemUtils.parseUri(R.drawable.image_other));
         mDatabase.child("events").orderByChild("users/" + mAuth.getUid()).equalTo(null)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -369,6 +387,8 @@ public class DatabaseUtils {
                             final Event currentEvent = data.getValue(Event.class);
                             if (currentEvent.getDeadline() > CalendarUtils.getCurrentTimeInMillis()) {
                                 mEventsList.add(currentEvent);
+                                if (currentEvent.getImageUri() == null)
+                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal()).toString());
                             }
                         }
                         eventsCallback.onEventsLoadSuccessful(mEventsList);
@@ -377,14 +397,60 @@ public class DatabaseUtils {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e("VolEventsF: loadEvents", databaseError.getMessage());
-                        eventsCallback.onEventsLoadFailed(new VolteemCommonException("unknown", databaseError.getMessage()));
+                        eventsCallback.onEventsLoadFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER
+                                , databaseError.getMessage()));
                     }
                 });
     }
 
-
     public static boolean isUserLoggedIn() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
+    public void createEvent(String eventName, String location, long startDate, long finishDate, Event.Type type,
+                            String description, long deadline, int volunteersNeeded, Uri mUriPicture) {
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        final String eventID = mDatabase.child("events").push().getKey();
+        final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("Photos").child("Event").child(eventID);
+        final Event newEvent = new Event(FirebaseAuth.getInstance().getCurrentUser().getUid(), eventName, location, description, eventID,
+                null, startDate, finishDate, deadline, CalendarUtils.getCurrentTimeInMillis(), type, volunteersNeeded, null);
+        if (mUriPicture != null) {
+            filePath.putBytes(ImageUtils.compressImage(mUriPicture, null)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                newEvent.setImageUri(uri.toString());
+                                writeEventToDatabase(newEvent);
+                            }
+                        });
+                    } else {
+                        createEventCallback.onCreateEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                                task.getException().getMessage()));
+                    }
+                }
+            });
+
+        } else {
+            writeEventToDatabase(newEvent);
+        }
+    }
+
+    private void writeEventToDatabase(Event event) {
+        mDatabase.child("events/" + event.getEventID()).setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    createEventCallback.onCreateEventSuccessful();
+                } else {
+                    createEventCallback.onCreateEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                            task.getException().getMessage()));
+                }
+            }
+        });
     }
 
     public interface LoginCallback {
@@ -435,5 +501,9 @@ public class DatabaseUtils {
         void onEventsLoadFailed(VolteemCommonException exception);
     }
 
+    public interface CreateEventCallback {
+        void onCreateEventSuccessful();
 
+        void onCreateEventFailed(VolteemCommonException exception);
+    }
 }

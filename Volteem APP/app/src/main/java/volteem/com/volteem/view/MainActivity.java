@@ -121,9 +121,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     break;
                 }
                 case R.id.nav_about: {
-                    fragment= new AboutFragment();
+                    fragment = new AboutFragment();
                     replaceFragmentByClass(fragment);
-                    actionBarTitle="About";
+                    actionBarTitle = "About";
                     break;
                 }
 

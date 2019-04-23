@@ -1,5 +1,7 @@
 package volteem.com.volteem.model.entity;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -8,10 +10,12 @@ public class Event implements Serializable {
     private String created_by;
     private String name;
     private String location;
-    private Type type;
     private String description;
     private String eventID;
+    private String imageUri;
     private long startDate, finishDate, deadline;
+    private long timestamp;
+    private Type type;
     private int size;
     private ArrayList<String> registered_volunteers = new ArrayList<>();
     private ArrayList<String> accepted_volunteers = new ArrayList<>();
@@ -23,21 +27,36 @@ public class Event implements Serializable {
 
     public Event(){}
 
-    public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
-                 String description, long deadline, int size, ArrayList<String> requiredQuestions) {
+    /**
+     * @param created_by id of the user who created the event
+     * @param name the name of the event
+     * @param location the location where the event takes place
+     * @param description the event's description
+     * @param eventID the event's id
+     * @param imageUri the event's image uri (can be null)
+     * @param startDate the start date of the event
+     * @param finishDate the finish date of the event
+     * @param deadline the deadline of the event
+     * @param timestamp the timestamp of the creation of the event
+     * @param type the type of the event (it is an enum)
+     * @param size the number of volunteers needed for this event
+     * @param requiredQuestions the list of ids for the required questions of the event's form
+     */
+    public Event(String created_by, String name, String location, String description, String eventID,
+                 String imageUri, long startDate, long finishDate, long deadline, long timestamp, Type type, int size, ArrayList<String> requiredQuestions) {
         this.created_by = created_by;
         this.name = name;
         this.location = location;
+        this.description = description;
+        this.eventID = eventID;
+        this.imageUri = imageUri;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.type = type;
-        this.description = description;
         this.deadline = deadline;
+        this.timestamp = timestamp;
+        this.type = type;
         this.size = size;
-        this.eventID = eventID;
         this.requiredQuestions = requiredQuestions;
-        this.registered_volunteers = new ArrayList<>();
-        this.accepted_volunteers = new ArrayList<>();
     }
 
     public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
@@ -57,8 +76,41 @@ public class Event implements Serializable {
         this.requiredQuestions = new ArrayList<>();
     }
 
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public enum Type {
-        SPORTS, MUSIC, FESTIVAL, CHARITY, TRAINING, OTHER;
+        NIL("Type"),
+        SPORTS("Sports"),
+        MUSIC("Music"),
+        FESTIVAL("Festival"),
+        CHARITY("Charity"),
+        TRAINING("Training"),
+        OTHER("Other");
+
+        private String typeText;
+
+        Type(String name){
+            this.typeText = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.typeText;
+        }
     }
 
     public long getStartDate() {

@@ -46,4 +46,12 @@
     <string name="view_image">View image</string>
     <string name="change_image">Change image</string>
     <string name="title_create_event_activity">Create Event</string>
+    <string name="header_title">Volteem</string>
+    <string name="type_prompt">Type</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="are_you_sure_message">Are you sure you want to leave this page? Changes you\'ve made will not be saved.</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="allow_storge_permission">Please allow storage permission</string>
+    <string name="set_permission">Set Permission</string>
 </resources>

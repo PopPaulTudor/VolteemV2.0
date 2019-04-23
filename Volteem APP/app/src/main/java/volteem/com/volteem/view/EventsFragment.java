@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,11 +116,10 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     @Override
-    public void onClickEvent(Event event, Uri uri) {
+    public void onClickEvent(Event event) {
         Intent intent = new Intent(getActivity(), EventActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(VolteemConstants.INTENT_EXTRA_EVENT, event);
-        bundle.putParcelable(VolteemConstants.INTENT_EXTRA_IMAGE_URI, uri);
         intent.putExtras(bundle);
         startActivity(intent);
     }

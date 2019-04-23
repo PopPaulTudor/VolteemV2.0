@@ -81,7 +81,7 @@ public class NewsFragment extends Fragment implements NewsFragmentPresenter.View
 
     @Override
     public void onDataRetrieveFailed(VolteemCommonException volteemCommonException) {
-        Toast.makeText(getActivity(), volteemCommonException.getCause(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), volteemCommonException.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
