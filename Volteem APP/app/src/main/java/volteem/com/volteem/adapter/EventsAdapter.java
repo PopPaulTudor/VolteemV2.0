@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import volteem.com.volteem.R;
 import volteem.com.volteem.callback.ActionListener;
 import volteem.com.volteem.model.entity.Event;
+import volteem.com.volteem.model.entity.SelectedEventsCategory;
 import volteem.com.volteem.util.CalendarUtils;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
@@ -30,11 +31,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
 
     private ArrayList<Event> eventsList;
     private ActionListener.EventAdapterListener eventAdapterListener;
+    private SelectedEventsCategory flag;
     private boolean wasUIActivated = false;
 
-    public EventsAdapter(ArrayList<Event> eventsList, ActionListener.EventAdapterListener eventAdapterListener) {
+    public EventsAdapter(ArrayList<Event> eventsList, ActionListener.EventAdapterListener eventAdapterListener, SelectedEventsCategory flag) {
         this.eventsList = eventsList;
         this.eventAdapterListener = eventAdapterListener;
+        this.flag = flag;
     }
 
     @NonNull
@@ -43,16 +46,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
             viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_event, parent, false);
         return new EventViewHolder(v);
-    }
+    } ///TODO: implement adapter for OWN EVENTS, VOLUNTEER_REGISTERED_TO_EVENT EVENTS
 
     @Override
     public void onBindViewHolder(@NonNull final EventsAdapter.EventViewHolder holder, final int
             position) {
-
-
+        /* Different layouts will be provided for different flags */
         holder.cardName.setText(eventsList.get(position).getName());
         holder.cardLocation.setText(eventsList.get(position).getLocation());
-        holder.cardDate.setText(CalendarUtils.getStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getDeadline()));
+        if(flag == SelectedEventsCategory.UNREGISTERED_EVENTS) { ///If the user is seeing the unregistered events, the deadline is displayed
+            holder.cardDate.setText(CalendarUtils.getStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getDeadline()));
+        } else {
+            holder.cardDate.setText(CalendarUtils.getNewsStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getStartDate()));
+        }
         Glide.with(holder.cardImage).load(Uri.parse(eventsList.get(position).getImageUri())).centerCrop()
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -67,7 +73,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
                             if (eventAdapterListener != null) {
                                 wasUIActivated = true;
                                 eventAdapterListener.onPicturesLoaded();
-                                //TODO aici se apeleaza metoda pt animatie daca ultimul event are poza
                             }
                         }
                         return false;

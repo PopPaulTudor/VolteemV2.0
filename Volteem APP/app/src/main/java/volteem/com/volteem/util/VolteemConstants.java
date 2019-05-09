@@ -2,9 +2,6 @@ package volteem.com.volteem.util;
 
 public class VolteemConstants {
 
-    public static final String VOLUNTEER_SINGLE_ACTIVITY_CAME_FROM_KEY =
-            "VOLUNTEER_SINGLE_ACTIVITY_CAME_FROM_KEY";
-
     public static final String VOLUNTEER_EVENT_STATUS_PENDING = "VOLUNTEER_EVENT_STATUS_PENDING";
 
     public static final String VOLUNTEER_EVENT_STATUS_ACCEPTED = "VOLUNTEER_EVENT_STATUS_ACCEPTED";
@@ -92,4 +89,8 @@ public class VolteemConstants {
     public static final String EXCEPTION_EVENT_DESCRIPTION = "EXCEPTION_DESCRIPTION";
 
     public static final String EXCEPTION_EVENT_SIZE = "EXCEPTION_SIZE";
+
+    public static final String INTENT_EXTRA_FLAG = "INTENT_FLAG";
+
+    public static final String MESSAGE_NEW_VOLUNTEER_REGISTERED = "A new volunteer registered to your event";
 }

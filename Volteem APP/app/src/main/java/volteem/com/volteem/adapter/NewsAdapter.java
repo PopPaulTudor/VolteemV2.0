@@ -52,16 +52,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             holder.starredIcon.setVisibility(View.GONE);
         }
         switch (newsList.get(holder.getAdapterPosition()).getType()) {
-            case ACCEPT:
+            case ACCEPTED_TO_EVENT:
                 holder.typeIcon.setImageResource(R.drawable.ic_checked);
                 break;
-            case FEEDBACK:
+            case RECEIVED_FEEDBACK:
                 holder.typeIcon.setImageResource(R.drawable.ic_feedback_news);
                 break;
             case EVENT_DELETED:
                 holder.typeIcon.setImageResource(R.drawable.ic_delete);
                 break;
-            case REGISTERED:
+            case VOLUNTEER_REGISTERED_TO_EVENT:
                 holder.typeIcon.setImageResource(R.drawable.ic_checked);
                 break;
             case VOLUNTEER_LEFT:
@@ -94,13 +94,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             public void onClick(View view) {
                 ///TODO: do something when we have actions to do, such that go to a certain activity
                 switch (newsList.get(holder.getAdapterPosition()).getType()) {
-                    case ACCEPT:
+                    case ACCEPTED_TO_EVENT:
                         break;
-                    case FEEDBACK:
+                    case RECEIVED_FEEDBACK:
                         break;
                     case EVENT_DELETED:
                         break;
-                    case REGISTERED:
+                    case VOLUNTEER_REGISTERED_TO_EVENT:
                         break;
                     case VOLUNTEER_LEFT:
                         break;

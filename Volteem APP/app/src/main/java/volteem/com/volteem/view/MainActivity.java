@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
     private DrawerLayout drawerLayout;
     private MainActivityPresenter presenter;
-    private MenuItem selectedItem;
+    private MenuItem selectedItem, eventsItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         });
         replaceFragmentByClass(new EventsFragment());
         navigationView.setItemIconTintList(null);
-        navigationView.getMenu().findItem(R.id.nav_events).setChecked(true);
+        eventsItem = navigationView.getMenu().findItem(R.id.nav_events);
+        eventsItem.setChecked(true);
         navigationView.getMenu().findItem(R.id.nav_log_out).setCheckable(false);
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -85,9 +86,31 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     }
 
     @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (fragment instanceof EventsFragment) {
+                super.onBackPressed();
+            } else {
+                replaceFragmentByClass(new EventsFragment());
+
+                if (selectedItem != null) {
+                    selectedItem.setChecked(false);
+                }
+                eventsItem.setChecked(true);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle("Events");
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
+        selectedItem = item;
         if (isNetworkAvailable()) {
             Fragment fragment = null;
             String actionBarTitle = getActionBar() == null ? "" : String.valueOf(getActionBar()

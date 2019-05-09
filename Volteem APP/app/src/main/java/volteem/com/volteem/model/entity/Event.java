@@ -1,13 +1,11 @@
 package volteem.com.volteem.model.entity;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Event implements Serializable {
 
-    private String created_by;
+    private String createdBy;
     private String name;
     private String location;
     private String description;
@@ -28,7 +26,7 @@ public class Event implements Serializable {
     public Event(){}
 
     /**
-     * @param created_by id of the user who created the event
+     * @param createdBy id of the user who created the event
      * @param name the name of the event
      * @param location the location where the event takes place
      * @param description the event's description
@@ -42,9 +40,9 @@ public class Event implements Serializable {
      * @param size the number of volunteers needed for this event
      * @param requiredQuestions the list of ids for the required questions of the event's form
      */
-    public Event(String created_by, String name, String location, String description, String eventID,
+    public Event(String createdBy, String name, String location, String description, String eventID,
                  String imageUri, long startDate, long finishDate, long deadline, long timestamp, Type type, int size, ArrayList<String> requiredQuestions) {
-        this.created_by = created_by;
+        this.createdBy = createdBy;
         this.name = name;
         this.location = location;
         this.description = description;
@@ -59,9 +57,9 @@ public class Event implements Serializable {
         this.requiredQuestions = requiredQuestions;
     }
 
-    public Event(String created_by, String name, String location, long startDate, long finishDate, Type type, String eventID,
+    public Event(String createdBy, String name, String location, long startDate, long finishDate, Type type, String eventID,
                  String description, long deadline, int size, ArrayList<String> registered_volunteers, ArrayList<String> accepted_volunteers) {
-        this.created_by = created_by;
+        this.createdBy = createdBy;
         this.name = name;
         this.location = location;
         this.type = type;
@@ -129,12 +127,12 @@ public class Event implements Serializable {
         this.finishDate = finishDate;
     }
 
-    public String getCreated_by() {
-        return created_by;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getName() {
