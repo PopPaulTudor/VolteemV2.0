@@ -273,18 +273,6 @@ public class CreateEventActivity extends AppCompatActivity implements CreateEven
                 mSize.setError(error);
                 mSize.requestFocus();
                 break;
-            case VolteemConstants.EXCEPTION_EVENT_START_DATE:
-                Toast.makeText(this, "Please enter a start date.", Toast.LENGTH_SHORT).show();
-                break;
-            case VolteemConstants.EXCEPTION_EVENT_FINISH_DATE:
-                Toast.makeText(this, "Please enter a finish date.", Toast.LENGTH_SHORT).show();
-                break;
-            case VolteemConstants.EXCEPTION_EVENT_DEADLINE:
-                Toast.makeText(this, "Please enter a deadline.", Toast.LENGTH_SHORT).show();
-                break;
-            case VolteemConstants.EXCEPTION_EVENT_TYPE:
-                Toast.makeText(this, "Please select a type.", Toast.LENGTH_SHORT).show();
-                break;
             default:
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 break;

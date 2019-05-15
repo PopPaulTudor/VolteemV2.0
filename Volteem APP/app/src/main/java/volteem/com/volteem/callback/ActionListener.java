@@ -12,6 +12,6 @@ public interface ActionListener {
     interface EventAdapterListener {
         void onPicturesLoaded();
 
-        void onClickEvent(Event event);
+        void onClickEvent(Event event, boolean isUserAccepted);
     }
 }

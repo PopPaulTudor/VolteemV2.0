@@ -58,4 +58,7 @@
     <string name="search">Search</string>
     <string name="apply_filters">Apply</string>
     <string name="event_register_disclaimer">Registering to an event is an important responsability. If you leave the event further on, you will gain a bad reputation.</string>
+    <string name="type">Type</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete event</string>
 </resources>

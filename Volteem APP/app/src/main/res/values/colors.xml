@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="cardElementBackgroundTint">#a1ffffff</color>
+    <color name="transparent">#00ff0000</color>
 </resources>

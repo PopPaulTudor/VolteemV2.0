@@ -55,6 +55,7 @@ public class DatabaseUtils {
     private EventsCallback eventsCallback;
     private CreateEventCallback createEventCallback;
     private SingleEventCallback singleEventCallback;
+    private EventInfoCallback eventInfoCallback;
     private ArrayList<NewsMessage> newsList;
     private ArrayList<Event> mEventsList;
 
@@ -100,6 +101,20 @@ public class DatabaseUtils {
         this.singleEventCallback = singleEventCallback;
         this.mAuth = FirebaseAuth.getInstance();
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public DatabaseUtils(EventInfoCallback eventInfoCallback) {
+        this.eventInfoCallback = eventInfoCallback;
+        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    /**
+     * static method returns id of signed in user
+     *
+     * @return String: id of the currently signed in user
+     */
+    public static String getUserID() {
+        return FirebaseAuth.getInstance().getUid();
     }
 
     /**
@@ -437,7 +452,7 @@ public class DatabaseUtils {
                             if (currentEvent.getDeadline() > CalendarUtils.getCurrentTimeInMillis()) {
                                 mEventsList.add(currentEvent);
                                 if (currentEvent.getImageUri() == null)
-                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal()).toString());
+                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal() - 1).toString());
                             }
                         }
                         eventsCallback.onEventsLoadSuccessful(mEventsList);
@@ -468,7 +483,7 @@ public class DatabaseUtils {
                             if (currentEvent.getFinishDate() > CalendarUtils.getCurrentTimeInMillis()) {
                                 mEventsList.add(currentEvent);
                                 if (currentEvent.getImageUri() == null)
-                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal()).toString());
+                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal() - 1).toString());
                             }
                         }
                         eventsCallback.onEventsLoadSuccessful(mEventsList);
@@ -499,8 +514,21 @@ public class DatabaseUtils {
                             if (currentEvent.getFinishDate() > CalendarUtils.getCurrentTimeInMillis()) {
                                 mEventsList.add(currentEvent);
                                 if (currentEvent.getImageUri() == null)
-                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal()).toString());
+                                    currentEvent.setImageUri(imageUris.get(currentEvent.getType().ordinal() - 1).toString());
                             }
+                            ArrayList<String> regUsers = new ArrayList<>();
+                            ArrayList<String> accUsers = new ArrayList<>();
+                            for (DataSnapshot registeredUsers : data.child("users").getChildren()) {
+                                if (TextUtils.equals(String.valueOf(registeredUsers.child("status").getValue()), VolteemConstants
+                                        .VOLUNTEER_EVENT_STATUS_PENDING)) {
+                                    regUsers.add(String.valueOf(registeredUsers.child("id").getValue()));
+                                } else {
+                                    accUsers.add(String.valueOf(registeredUsers.child("id").getValue()));
+                                }
+                            }
+
+                            currentEvent.setRegisteredVolunteers(regUsers);
+                            currentEvent.setAcceptedVolunteers(accUsers);
                         }
                         eventsCallback.onEventsLoadSuccessful(mEventsList);
                     }
@@ -631,6 +659,79 @@ public class DatabaseUtils {
                 });
     }
 
+    /**
+     * deletes the entry of the currently signed in user to the event with the given id;
+     * generates negative feedback for the user;
+     * callsback to the presenter when finished
+     *
+     * @param eventID   String: id of the event to leave
+     * @param createdBy String: id of the organiser of the event to leave
+     * @param eventName String: name of the event to leave
+     */
+    public void leaveEvent(final String eventID, String createdBy, final String eventName) {
+        String newsID = mDatabase.child("news").push().getKey();
+        mDatabase.child("news/" + newsID).setValue(new NewsMessage(mAuth.getUid(), createdBy, newsID, VolteemConstants.MESSAGE_VOLUNTEER_LEFT +
+                " " + eventName, CalendarUtils.getCurrentTimeInMillis(), NewsMessage.Type.VOLUNTEER_LEFT, false, false, eventID));
+        mDatabase.child("events").child(eventID).child("users").child(mAuth.getUid()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mDatabase.child("users/" + mAuth.getUid() + "/feedback/" + eventID).setValue("This user has left the event " + eventName);
+                    singleEventCallback.onLeaveEventSuccessful();
+                } else {
+                    singleEventCallback.onLeaveEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                            task.getException().getMessage()));
+                }
+            }
+        });
+    }
+
+    /**
+     * updates an event in the database
+     * callbacks to presenter when finished
+     *
+     * @param event Event: event to be updated
+     */
+    public void updateEvent(final Event event) {
+        mDatabase.child("events/" + event.getEventID()).setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    eventInfoCallback.onEditEventSuccessful(event);
+                } else {
+                    eventInfoCallback.onEditEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                            task.getException().getMessage()));
+                }
+            }
+        });
+    }
+
+    public void deleteEvent(Event eventToDelete) {
+        for (String volunteer_id : eventToDelete.getRegisteredVolunteers()) {
+            String newsID = mDatabase.child("news").push().getKey();
+            NewsMessage newsMessage = new NewsMessage(getUserID(), volunteer_id, newsID, eventToDelete.getName() + " " + VolteemConstants.MESSAGE_EVENT_DELETED,
+                    CalendarUtils.getCurrentTimeInMillis(), NewsMessage.Type.EVENT_DELETED, false, false, eventToDelete.getEventID());
+            mDatabase.child("news/" + newsID).setValue(newsMessage);
+        }
+        for (String volunteer_id : eventToDelete.getAcceptedVolunteers()) {
+            String newsID = mDatabase.child("news").push().getKey();
+            NewsMessage newsMessage = new NewsMessage(getUserID(), volunteer_id, newsID, eventToDelete.getName() + " " + VolteemConstants.MESSAGE_EVENT_DELETED,
+                    CalendarUtils.getCurrentTimeInMillis(), NewsMessage.Type.EVENT_DELETED, false, false, eventToDelete.getEventID());
+            mDatabase.child("news/" + newsID).setValue(newsMessage);
+        }
+        mDatabase.child("events").child(eventToDelete.getEventID()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    eventInfoCallback.onDeleteEventSuccessful();
+                } else {
+                    eventInfoCallback.onDeleteEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                            task.getException().getMessage()));
+                }
+            }
+        });
+    }
+
     public interface LoginCallback {
         void onSignInSucceeded();
 
@@ -689,5 +790,19 @@ public class DatabaseUtils {
         void onRegisterToEventSuccessful();
 
         void onRegisterToEventFailed(VolteemCommonException exception);
+
+        void onLeaveEventSuccessful();
+
+        void onLeaveEventFailed(VolteemCommonException exception);
+    }
+
+    public interface EventInfoCallback {
+        void onEditEventSuccessful(Event updatedEvent);
+
+        void onEditEventFailed(VolteemCommonException exception);
+
+        void onDeleteEventSuccessful();
+
+        void onDeleteEventFailed(VolteemCommonException exception);
     }
 }

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,10 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -25,6 +30,8 @@ import volteem.com.volteem.callback.ActionListener;
 import volteem.com.volteem.model.entity.Event;
 import volteem.com.volteem.model.entity.SelectedEventsCategory;
 import volteem.com.volteem.util.CalendarUtils;
+import volteem.com.volteem.util.DatabaseUtils;
+import volteem.com.volteem.util.VolteemConstants;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
         .EventViewHolder> {
@@ -54,10 +61,35 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
         /* Different layouts will be provided for different flags */
         holder.cardName.setText(eventsList.get(position).getName());
         holder.cardLocation.setText(eventsList.get(position).getLocation());
-        if(flag == SelectedEventsCategory.UNREGISTERED_EVENTS) { ///If the user is seeing the unregistered events, the deadline is displayed
+        if(flag == SelectedEventsCategory.UNREGISTERED_EVENTS) {///If the user is seeing the unregistered events, the deadline is displayed
             holder.cardDate.setText(CalendarUtils.getStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getDeadline()));
         } else {
             holder.cardDate.setText(CalendarUtils.getNewsStringDateFromMM(eventsList.get(holder.getAdapterPosition()).getStartDate()));
+        }
+        if(flag == SelectedEventsCategory.REGISTERED_EVENTS) {
+            holder.statusImage.setVisibility(View.VISIBLE);
+            FirebaseDatabase.getInstance().getReference().child("events").child(eventsList.get(position).getEventID()).child
+                    ("users").child(DatabaseUtils.getUserID())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (TextUtils.equals(String.valueOf(dataSnapshot.child("status")
+                                    .getValue()), VolteemConstants.VOLUNTEER_EVENT_STATUS_ACCEPTED)) {
+                                holder.statusImage.setImageResource(R.drawable.ic_checked);
+                                holder.statusImage.setTag(VolteemConstants.VOLUNTEER_EVENT_STATUS_ACCEPTED);
+                            } else {
+                                holder.statusImage.setImageResource(R.drawable.ic_watch);
+                                holder.statusImage.setTag(VolteemConstants.VOLUNTEER_EVENT_STATUS_PENDING);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        } else {
+            holder.statusImage.setVisibility(View.GONE);
         }
         Glide.with(holder.cardImage).load(Uri.parse(eventsList.get(position).getImageUri())).centerCrop()
                 .listener(new RequestListener<Drawable>() {
@@ -83,7 +115,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventAdapterListener.onClickEvent(eventsList.get(holder.getAdapterPosition()));
+                boolean isUserAccepted = false;
+                if(flag == SelectedEventsCategory.REGISTERED_EVENTS) {
+                    isUserAccepted = TextUtils.equals(holder.statusImage.getTag().toString(), VolteemConstants.VOLUNTEER_EVENT_STATUS_ACCEPTED);
+                }
+                eventAdapterListener.onClickEvent(eventsList.get(holder.getAdapterPosition()), isUserAccepted);
             }
         });
     }
@@ -99,6 +135,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
         TextView cardDate;
         TextView cardLocation;
         ImageView cardImage;
+        ImageView statusImage;
         CardView cardView;
 
         EventViewHolder(View v) {
@@ -108,6 +145,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter
             cardDate = v.findViewById(R.id.event_start_date);
             cardLocation = v.findViewById(R.id.event_location);
             cardImage = v.findViewById(R.id.event_image);
+            statusImage = v.findViewById(R.id.statusImage);
             cardView = v.findViewById(R.id.card_element);
         }
     }

@@ -15,8 +15,8 @@ public class Event implements Serializable {
     private long timestamp;
     private Type type;
     private int size;
-    private ArrayList<String> registered_volunteers = new ArrayList<>();
-    private ArrayList<String> accepted_volunteers = new ArrayList<>();
+    private ArrayList<String> registeredVolunteers = new ArrayList<>();
+    private ArrayList<String> acceptedVolunteers = new ArrayList<>();
     private ArrayList<String> requiredQuestions = new ArrayList<>();
 
     public Event(String s, String s1, String s2, int i, int i1, String s3, String s4, int i2, int i3, Object o) {
@@ -58,7 +58,7 @@ public class Event implements Serializable {
     }
 
     public Event(String createdBy, String name, String location, long startDate, long finishDate, Type type, String eventID,
-                 String description, long deadline, int size, ArrayList<String> registered_volunteers, ArrayList<String> accepted_volunteers) {
+                 String description, long deadline, int size, ArrayList<String> registeredVolunteers, ArrayList<String> acceptedVolunteers) {
         this.createdBy = createdBy;
         this.name = name;
         this.location = location;
@@ -69,8 +69,8 @@ public class Event implements Serializable {
         this.deadline = deadline;
         this.size = size;
         this.eventID = eventID;
-        this.registered_volunteers = registered_volunteers;
-        this.accepted_volunteers = accepted_volunteers;
+        this.registeredVolunteers = registeredVolunteers;
+        this.acceptedVolunteers = acceptedVolunteers;
         this.requiredQuestions = new ArrayList<>();
     }
 
@@ -191,20 +191,20 @@ public class Event implements Serializable {
         this.eventID = eventID;
     }
 
-    public ArrayList<String> getRegistered_volunteers() {
-        return registered_volunteers;
+    public ArrayList<String> getRegisteredVolunteers() {
+        return registeredVolunteers;
     }
 
-    public void setRegistered_volunteers(ArrayList<String> registered_volunteers) {
-        this.registered_volunteers = registered_volunteers;
+    public void setRegisteredVolunteers(ArrayList<String> registeredVolunteers) {
+        this.registeredVolunteers = registeredVolunteers;
     }
 
-    public ArrayList<String> getAccepted_volunteers() {
-        return accepted_volunteers;
+    public ArrayList<String> getAcceptedVolunteers() {
+        return acceptedVolunteers;
     }
 
-    public void setAccepted_volunteers(ArrayList<String> accepted_volunteers) {
-        this.accepted_volunteers = accepted_volunteers;
+    public void setAcceptedVolunteers(ArrayList<String> acceptedVolunteers) {
+        this.acceptedVolunteers = acceptedVolunteers;
     }
 
     public ArrayList<String> getRequiredQuestions() {

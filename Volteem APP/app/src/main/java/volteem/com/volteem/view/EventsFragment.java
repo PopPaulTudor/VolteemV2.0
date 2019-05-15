@@ -222,15 +222,15 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     @Override
-    public void onClickEvent(Event event) {
-        if (presenter.getSelectedEventsCategory() == SelectedEventsCategory.OWN_EVENTS) {
-            Toast.makeText(getActivity(), "Event Activity for organisers not yet available.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Intent intent = new Intent(getActivity(), EventActivity.class);
+    public void onClickEvent(Event event, boolean isUserAccepted) {
+        Intent intent = new Intent(getActivity(), presenter.getSelectedEventsCategory() != SelectedEventsCategory.OWN_EVENTS
+                ? EventActivity.class : OrganiserEventActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(VolteemConstants.INTENT_EXTRA_EVENT, event);
-        bundle.putSerializable(VolteemConstants.INTENT_EXTRA_FLAG, presenter.getSelectedEventsCategory());
+        if (presenter.getSelectedEventsCategory() != SelectedEventsCategory.OWN_EVENTS) {
+            bundle.putSerializable(VolteemConstants.INTENT_EXTRA_FLAG, presenter.getSelectedEventsCategory());
+            bundle.putBoolean(VolteemConstants.INTENT_EXTRA_STATUS, isUserAccepted);
+        }
         intent.putExtras(bundle);
         startActivity(intent);
     }

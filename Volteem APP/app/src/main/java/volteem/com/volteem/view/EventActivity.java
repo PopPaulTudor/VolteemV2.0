@@ -20,7 +20,6 @@ import com.bumptech.glide.Glide;
 
 import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.Event;
-import volteem.com.volteem.model.entity.NewsMessage;
 import volteem.com.volteem.model.entity.SelectedEventsCategory;
 import volteem.com.volteem.model.entity.VolteemCommonException;
 import volteem.com.volteem.presenter.EventActivityPresenter;
@@ -68,6 +67,8 @@ public class EventActivity extends AppCompatActivity implements EventActivityPre
         } else {
             ///Update View for a user who has registered to this event
             mLeaveEvent.setVisibility(View.VISIBLE);
+            mStatus.setVisibility(View.VISIBLE);
+            mStatus.setText(presenter.isUserAccepted() ? "Accepted" : "Pending");
         }
 
         mSignupForEventFloatingButton.setOnClickListener(new View.OnClickListener() {
@@ -84,15 +85,48 @@ public class EventActivity extends AppCompatActivity implements EventActivityPre
                         (TypedValue.COMPLEX_UNIT_DIP, 210, getResources().getDisplayMetrics()));
                 mBottomSheetDialog.show();
 
-                ///TODO: find why bottom sheet does not show
                 parentView.findViewById(R.id.registerForEvent).setOnClickListener(new View
                         .OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        presenter.onSignUpForEventButtonPressed();
+                        presenter.registerToEvent();
                         mBottomSheetDialog.dismiss();
                         Toast.makeText(EventActivity.this, "Signing up for event...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                parentView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mBottomSheetDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        mLeaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog
+                        (EventActivity.this);
+                View parentView = getLayoutInflater().inflate(R.layout
+                        .leave_event_bottom_sheet_design, null);
+                mBottomSheetDialog.setContentView(parentView);
+                BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from((View)
+                        parentView.getParent());
+                mBottomSheetBehavior.setPeekHeight((int) TypedValue.applyDimension
+                        (TypedValue.COMPLEX_UNIT_DIP, 210, getResources().getDisplayMetrics()));
+                mBottomSheetDialog.show();
+
+                parentView.findViewById(R.id.leaveEvent).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        mBottomSheetDialog.dismiss();
+                        Toast.makeText(EventActivity.this, "Leaving event...", Toast.LENGTH_SHORT).show();
+                        presenter.leaveEvent();
                     }
                 });
 
@@ -151,6 +185,16 @@ public class EventActivity extends AppCompatActivity implements EventActivityPre
 
     @Override
     public void onRegisterToEventFailed(VolteemCommonException exception) {
+        Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLeaveEventSuccessful() {
+        finish();
+    }
+
+    @Override
+    public void onLeaveEventFailed(VolteemCommonException exception) {
         Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
     }
 

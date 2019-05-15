@@ -22,7 +22,8 @@ public class EventActivityPresenter implements Presenter, DatabaseUtils.SingleEv
         this.view = view;
         this.bundleExtras = bundleExtras;
         this.model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT),
-                (SelectedEventsCategory) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_FLAG));
+                (SelectedEventsCategory) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_FLAG),
+                bundleExtras.getBoolean(VolteemConstants.INTENT_EXTRA_STATUS));
         this.databaseUtils = new DatabaseUtils(this);
     }
 
@@ -30,11 +31,13 @@ public class EventActivityPresenter implements Presenter, DatabaseUtils.SingleEv
     public void onCreate() {
         if (model == null) {
             model = new EventActivityModel((Event) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_EVENT),
-                    (SelectedEventsCategory) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_FLAG));
+                    (SelectedEventsCategory) bundleExtras.getSerializable(VolteemConstants.INTENT_EXTRA_FLAG),
+                    bundleExtras.getBoolean(VolteemConstants.INTENT_EXTRA_STATUS));
+        }
+        if (model.getEvent() != null) {
+            view.loadUI(model.getEvent(), model.getImageUri());
         } else {
-            if (model.getEvent() != null) {
-                view.loadUI(model.getEvent(), model.getImageUri());
-            }
+            ///TODO: retrieve the event if it is null (probably came from a notification)
         }
         if (databaseUtils == null) {
             databaseUtils = new DatabaseUtils(this);
@@ -56,8 +59,12 @@ public class EventActivityPresenter implements Presenter, DatabaseUtils.SingleEv
         //TODO: decide whether ot not action happened
     }
 
-    public void onSignUpForEventButtonPressed() {
+    public void registerToEvent() {
         databaseUtils.registerToEvent(model.getEvent().getEventID(), model.getEvent().getCreatedBy(), model.getEvent().getName());
+    }
+
+    public void leaveEvent() {
+        databaseUtils.leaveEvent(model.getEvent().getEventID(), model.getEvent().getCreatedBy(), model.getEvent().getName());
     }
 
     public SelectedEventsCategory getFlag() {
@@ -74,11 +81,29 @@ public class EventActivityPresenter implements Presenter, DatabaseUtils.SingleEv
         view.onRegisterToEventFailed(exception);
     }
 
+    @Override
+    public void onLeaveEventSuccessful() {
+        view.onLeaveEventSuccessful();
+    }
+
+    @Override
+    public void onLeaveEventFailed(VolteemCommonException exception) {
+        view.onLeaveEventFailed(exception);
+    }
+
+    public boolean isUserAccepted() {
+        return model.isUserAccepted();
+    }
+
     public interface View {
         void loadUI(Event event, Uri uri);
 
         void onRegisterToEventSuccessful();
 
         void onRegisterToEventFailed(VolteemCommonException exception);
+
+        void onLeaveEventSuccessful();
+
+        void onLeaveEventFailed(VolteemCommonException exception);
     }
 }
