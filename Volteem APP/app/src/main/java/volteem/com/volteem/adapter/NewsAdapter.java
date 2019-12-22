@@ -92,7 +92,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ///TODO: do something when we have actions to do, such that go to a certain activity
+                ///TODO: do something when we have actions to do, such as go to a certain activity
                 switch (newsList.get(holder.getAdapterPosition()).getType()) {
                     case ACCEPTED_TO_EVENT:
                         break;

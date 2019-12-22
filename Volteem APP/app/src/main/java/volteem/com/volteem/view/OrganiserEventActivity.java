@@ -1,25 +1,32 @@
 package volteem.com.volteem.view;
 
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import volteem.com.volteem.R;
 import volteem.com.volteem.adapter.OrganiserEventViewPagerAdapter;
 import volteem.com.volteem.model.entity.Event;
+import volteem.com.volteem.model.entity.RegisteredUser;
 import volteem.com.volteem.presenter.OrganiserEventActivityPresenter;
 import volteem.com.volteem.util.VolteemConstants;
 
-public class OrganiserEventActivity extends AppCompatActivity implements OrganiserEventActivityPresenter.View{
+public class OrganiserEventActivity extends AppCompatActivity implements OrganiserEventActivityPresenter.View {
 
     private OrganiserEventActivityPresenter presenter;
     private Toolbar mToolbar;
@@ -46,6 +53,33 @@ public class OrganiserEventActivity extends AppCompatActivity implements Organis
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        /*FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    final String userID = dataSnapshot1.getKey();
+                    FirebaseDatabase.getInstance().getReference().child("events").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                                FirebaseDatabase.getInstance().getReference().child("events").child(dataSnapshot2.getKey()).child("users").child(userID)
+                                        .setValue(new RegisteredUser(userID, VolteemConstants.VOLUNTEER_EVENT_STATUS_PENDING, VolteemConstants.VOLUNTEER_EVENT_FLAG_PENDING));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
     }
 
     @Override

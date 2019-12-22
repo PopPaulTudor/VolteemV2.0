@@ -1,16 +1,19 @@
 package volteem.com.volteem.model.entity;
 
 public class User {
+    private String id;
     private String firstName, lastName, eMail, city, phone, gender;
     private long birthDate;
-
-    //TODO: add a creation timestamp field
+    private int experience;
+    private long creationTimestamp;
 
     public User() { ///constructor is empty to be able to call dataSnapshot on this class
 
     }
 
-    public User(String firstName, String lastName, String eMail, String city, String phone, String gender, long birthDate) {
+    public User(String id, String firstName, String lastName, String eMail, String city, String phone, String gender, long birthDate,
+                int experience, long creationTimestamp) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
@@ -18,6 +21,8 @@ public class User {
         this.phone = phone;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.experience = experience;
+        this.creationTimestamp = creationTimestamp;
     }
 
     public String getFirstName() {
@@ -74,5 +79,29 @@ public class User {
 
     public void setBirthDate(long birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int experience) {
+        this.experience = experience;
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public void setCreationTimestamp(long creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 }

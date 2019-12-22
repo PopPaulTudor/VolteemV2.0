@@ -107,4 +107,6 @@ public class VolteemConstants {
     public static final String EXCEPTION_MESSAGE_TYPE_EMPTY = "Please select a type";
 
     public static final String MESSAGE_EVENT_DELETED = "has been deleted by its organiser.";
+
+    public static final String MESSAGE_ACCEPTED_TO_EVENT = "You have been accepted at";
 }

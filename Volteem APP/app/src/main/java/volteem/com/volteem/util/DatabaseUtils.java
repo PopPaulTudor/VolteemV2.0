@@ -56,8 +56,8 @@ public class DatabaseUtils {
     private CreateEventCallback createEventCallback;
     private SingleEventCallback singleEventCallback;
     private EventInfoCallback eventInfoCallback;
-    private ArrayList<NewsMessage> newsList;
-    private ArrayList<Event> mEventsList;
+    private EventUsersCallback eventUsersCallback;
+    private FeedbackRetrieverCallback feedbackRetrieverCallback;
 
     public DatabaseUtils(LoginCallback loginCallback) {
         this.loginCallback = loginCallback;
@@ -108,6 +108,10 @@ public class DatabaseUtils {
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+    public DatabaseUtils(EventUsersCallback eventUsersCallback) {
+        this.eventUsersCallback = eventUsersCallback;
+    }
+
     /**
      * static method returns id of signed in user
      *
@@ -115,6 +119,20 @@ public class DatabaseUtils {
      */
     public static String getUserID() {
         return FirebaseAuth.getInstance().getUid();
+    }
+
+    /**
+     * accepts a user to an event
+     *
+     * @param userID String: id of the user to be accepted
+     * @param event  Event: event to be accepted to
+     */
+    public static void acceptVolunteer(String userID, Event event) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("events").child(event.getEventID()).child("users").child(userID).child("status").setValue(VolteemConstants.VOLUNTEER_EVENT_STATUS_ACCEPTED);
+        String newsID = databaseReference.child("news").push().getKey();
+        databaseReference.child("news").child(newsID).setValue(new NewsMessage(getUserID(), userID, newsID, VolteemConstants.MESSAGE_ACCEPTED_TO_EVENT + " " +
+                event.getName() + "!", CalendarUtils.getCurrentTimeInMillis(), NewsMessage.Type.ACCEPTED_TO_EVENT, false, false, event.getEventID()));
     }
 
     /**
@@ -205,7 +223,7 @@ public class DatabaseUtils {
                             String userID;
                             if (user != null) {
                                 userID = user.getUid();
-                                User newUser = new User(firstName, lastName, eMail, city, phone, gender, birthdate);
+                                User newUser = new User(userID, firstName, lastName, eMail, city, phone, gender, birthdate, 0, CalendarUtils.getCurrentTimeInMillis());
                                 mDatabase.child("users").child(userID).setValue(newUser);
 
                                 UserProfileChangeRequest mProfileUpdate = new UserProfileChangeRequest.Builder()
@@ -247,7 +265,7 @@ public class DatabaseUtils {
      * retrieves the news list of the currently signed in user
      */
     public void retrieveNewsList() {
-        newsList = new ArrayList<>();
+        final ArrayList<NewsMessage> newsList = new ArrayList<>();
         mDatabase.child("news").orderByChild("receivedBy").equalTo(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -446,7 +464,7 @@ public class DatabaseUtils {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        mEventsList = new ArrayList<>();
+                        final ArrayList<Event> mEventsList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             final Event currentEvent = data.getValue(Event.class);
                             if (currentEvent.getDeadline() > CalendarUtils.getCurrentTimeInMillis()) {
@@ -477,7 +495,7 @@ public class DatabaseUtils {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        mEventsList = new ArrayList<>();
+                        final ArrayList<Event> mEventsList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             final Event currentEvent = data.getValue(Event.class);
                             if (currentEvent.getFinishDate() > CalendarUtils.getCurrentTimeInMillis()) {
@@ -508,7 +526,7 @@ public class DatabaseUtils {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        mEventsList = new ArrayList<>();
+                        final ArrayList<Event> mEventsList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             final Event currentEvent = data.getValue(Event.class);
                             if (currentEvent.getFinishDate() > CalendarUtils.getCurrentTimeInMillis()) {
@@ -706,6 +724,12 @@ public class DatabaseUtils {
         });
     }
 
+    /**
+     * deletes the event from the database and announces all the users registered to it
+     * callsback to the presenter when finished
+     *
+     * @param eventToDelete Event: the event to be deleted
+     */
     public void deleteEvent(Event eventToDelete) {
         for (String volunteer_id : eventToDelete.getRegisteredVolunteers()) {
             String newsID = mDatabase.child("news").push().getKey();
@@ -722,7 +746,7 @@ public class DatabaseUtils {
         mDatabase.child("events").child(eventToDelete.getEventID()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     eventInfoCallback.onDeleteEventSuccessful();
                 } else {
                     eventInfoCallback.onDeleteEventFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
@@ -730,6 +754,37 @@ public class DatabaseUtils {
                 }
             }
         });
+    }
+
+    /**
+     * retrieves the list of users
+     *
+     * @param usersIds ArrayList of String: list of ids of users whose profiles need to be retrieved
+     */
+    public void getEventUsersList(final ArrayList<String> usersIds) {
+        final ArrayList<User> registeredUsersList = new ArrayList<>();
+        for (final String userID : usersIds) {
+            FirebaseDatabase.getInstance().getReference().child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User currentUser = dataSnapshot.getValue(User.class);
+                    registeredUsersList.add(currentUser);
+                    if (usersIds.size() == registeredUsersList.size()) {
+                        eventUsersCallback.onRetrieveUsersListSuccessful(registeredUsersList);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    eventUsersCallback.onRetrieveUsersListFailed(new VolteemCommonException(VolteemConstants.EXCEPTION_OTHER,
+                            databaseError.getMessage()));
+                }
+            });
+        }
+    }
+
+    public void getUserFeedbackList() {
+
     }
 
     public interface LoginCallback {
@@ -804,5 +859,15 @@ public class DatabaseUtils {
         void onDeleteEventSuccessful();
 
         void onDeleteEventFailed(VolteemCommonException exception);
+    }
+
+    public interface EventUsersCallback {
+        void onRetrieveUsersListSuccessful(ArrayList<User> registeredUsers);
+
+        void onRetrieveUsersListFailed(VolteemCommonException exception);
+    }
+
+    public interface FeedbackRetrieverCallback {
+        void onRetrieveFeedbackSuccessful(ArrayList<String> feedbackList);
     }
 }

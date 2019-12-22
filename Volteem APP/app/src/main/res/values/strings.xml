@@ -61,4 +61,7 @@
     <string name="type">Type</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete event</string>
+    <string name="no_reg_volunteers">No new volunteers.</string>
+    <string name="accept_volunteer">Accept</string>
+    <string name="no_feedback">This user has no feedback.</string>
 </resources>
