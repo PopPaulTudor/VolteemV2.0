@@ -60,11 +60,11 @@ public class CreateEventActivityPresenter implements Presenter, DatabaseUtils.Cr
         }
         if (startDate == -1) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_START_DATE,
-                    VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
+                    VolteemConstants.EXCEPTION_MESSAGE_START_DATE_EMPTY);
         }
         if (finishDate == -1) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_FINISH_DATE,
-                    VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
+                    VolteemConstants.EXCEPTION_MESSAGE_FINISH_DATE_EMPTY);
         }
         if (finishDate < startDate) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_FINISH_DATE,
@@ -76,7 +76,7 @@ public class CreateEventActivityPresenter implements Presenter, DatabaseUtils.Cr
         }
         if (deadline == -1) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_DEADLINE,
-                    VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
+                    VolteemConstants.EXCEPTION_MESSAGE_DEADLINE_EMPTY);
         }
         if (deadline > startDate) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_DEADLINE,
@@ -84,7 +84,7 @@ public class CreateEventActivityPresenter implements Presenter, DatabaseUtils.Cr
         }
         if (type == Event.Type.NIL) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_TYPE,
-                    VolteemConstants.EXCEPTION_MESSAGE_EMPTY);
+                    VolteemConstants.EXCEPTION_MESSAGE_TYPE_EMPTY);
         }
         if (description.isEmpty()) {
             return new VolteemCommonException(VolteemConstants.EXCEPTION_EVENT_DESCRIPTION,

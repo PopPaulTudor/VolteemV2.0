@@ -56,4 +56,15 @@
     <string name="allow_storge_permission">Please allow storage permission</string>
     <string name="set_permission">Set Permission</string>
     <string name="ngos">NGOs</string>
+    <string name="filter">Filters</string>
+    <string name="search">Search</string>
+    <string name="apply_filters">Apply</string>
+    <string name="event_register_disclaimer">Registering to an event is an important responsability. If you leave the event further on, you will gain a bad reputation.</string>
+    <string name="type">Type</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete event</string>
+    <string name="no_reg_volunteers">No new volunteers.</string>
+    <string name="accept_volunteer">Accept</string>
+    <string name="no_feedback">This user has no feedback.</string>
+
 </resources>

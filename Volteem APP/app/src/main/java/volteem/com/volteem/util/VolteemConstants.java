@@ -2,9 +2,6 @@ package volteem.com.volteem.util;
 
 public class VolteemConstants {
 
-    public static final String VOLUNTEER_SINGLE_ACTIVITY_CAME_FROM_KEY =
-            "VOLUNTEER_SINGLE_ACTIVITY_CAME_FROM_KEY";
-
     public static final String VOLUNTEER_EVENT_STATUS_PENDING = "VOLUNTEER_EVENT_STATUS_PENDING";
 
     public static final String VOLUNTEER_EVENT_STATUS_ACCEPTED = "VOLUNTEER_EVENT_STATUS_ACCEPTED";
@@ -94,4 +91,25 @@ public class VolteemConstants {
     public static final String EXCEPTION_EVENT_SIZE = "EXCEPTION_SIZE";
 
     public static final String INTENT_EXTRA_NGO="INTENT_EXTRA_NGO";
+
+    public static final String INTENT_EXTRA_FLAG = "INTENT_FLAG";
+
+    public static final String MESSAGE_NEW_VOLUNTEER_REGISTERED = "A new volunteer registered to your event";
+
+    public static final String MESSAGE_VOLUNTEER_LEFT = "A volunteer has left your event";
+
+    public static final String INTENT_EXTRA_STATUS = "INTENT_STATUS";
+
+    public static final String EXCEPTION_MESSAGE_START_DATE_EMPTY = "Please enter a start date.";
+
+    public static final String EXCEPTION_MESSAGE_FINISH_DATE_EMPTY = "Please enter a finish date.";
+
+    public static final String EXCEPTION_MESSAGE_DEADLINE_EMPTY = "Please enter a deadline";
+
+    public static final String EXCEPTION_MESSAGE_TYPE_EMPTY = "Please select a type";
+
+    public static final String MESSAGE_EVENT_DELETED = "has been deleted by its organiser.";
+
+    public static final String MESSAGE_ACCEPTED_TO_EVENT = "You have been accepted at";
+
 }

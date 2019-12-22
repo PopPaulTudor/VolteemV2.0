@@ -1,7 +1,5 @@
 package volteem.com.volteem.callback;
 
-import android.net.Uri;
-
 import volteem.com.volteem.model.entity.Event;
 import volteem.com.volteem.model.entity.NGO;
 
@@ -13,7 +11,11 @@ public interface ActionListener {
     interface EventAdapterListener {
         void onPicturesLoaded();
 
-        void onClickEvent(Event event);
+        void onClickEvent(Event event, boolean isUserAccepted);
+    }
+
+    interface UsersRemovedListener {
+        void onAllUsersRemoved();
     }
 
     interface NGOAdapterListener{

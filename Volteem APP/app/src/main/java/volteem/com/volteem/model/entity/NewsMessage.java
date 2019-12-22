@@ -52,6 +52,6 @@ public class NewsMessage extends Message {
     }
 
     public enum Type {
-        ACCEPT, FEEDBACK, EVENT_DELETED, REGISTERED, VOLUNTEER_LEFT;
+        ACCEPTED_TO_EVENT, RECEIVED_FEEDBACK, EVENT_DELETED, VOLUNTEER_REGISTERED_TO_EVENT, VOLUNTEER_LEFT;
     }
 }
