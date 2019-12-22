@@ -105,12 +105,11 @@ public class DatabaseUtils {
     }
 
 
-    public DatabaseUtils(NGOsCallBack ngosCallBack)
-    {
-        this.ngosCallBack=ngosCallBack;
-        this.mAuth=FirebaseAuth.getInstance();
-        this.mDatabase=FirebaseDatabase.getInstance().getReference();
-
+    public DatabaseUtils(NGOsCallBack ngosCallBack) {
+        this.ngosCallBack = ngosCallBack;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
 
     public DatabaseUtils(SingleEventCallback singleEventCallback) {
         this.singleEventCallback = singleEventCallback;
@@ -532,15 +531,14 @@ public class DatabaseUtils {
     }
 
 
-    public void getNGOsList()
-    {
-        mDatabase.child("NGOs").orderByChild("users/"+mAuth.getUid()).equalTo(null)
+    public void getNGOsList() {
+        mDatabase.child("NGOs").orderByChild("users/" + mAuth.getUid()).equalTo(null)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mNGOsList = new ArrayList<>();
-                        for(DataSnapshot data: dataSnapshot.getChildren()){
-                            final NGO currentNGO= data.getValue(NGO.class);
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            final NGO currentNGO = data.getValue(NGO.class);
                             mNGOsList.add(currentNGO);
                             // TODO: 5/18/2019 add sorting method when we decide the fields
                         }
@@ -550,12 +548,16 @@ public class DatabaseUtils {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        ngosCallBack.onNGOsLoadFailed(new VolteemCommonException("NGOs",databaseError.getMessage()));
+                        ngosCallBack.onNGOsLoadFailed(new VolteemCommonException("NGOs", databaseError.getMessage()));
+                    }
+                });
+    }
 
     /**
      * retrieves the list of events the currently signed in user has personally created himself
      * callbacks to the presenter when the retrieval is finished
      */
+
     public void getOwnEventsList() {
         final ArrayList<Uri> imageUris = parseImageUris();
         mDatabase.child("events").orderByChild("createdBy").equalTo(mAuth.getUid())
@@ -881,11 +883,11 @@ public class DatabaseUtils {
     }
 
 
-    public interface  NGOsCallBack{
+    public interface NGOsCallBack {
         void onNGOsLoadSuccessful(ArrayList<NGO> ngos);
 
         void onNGOsLoadFailed(VolteemCommonException exception);
-
+    }
 
     public interface SingleEventCallback {
         void onRegisterToEventSuccessful();

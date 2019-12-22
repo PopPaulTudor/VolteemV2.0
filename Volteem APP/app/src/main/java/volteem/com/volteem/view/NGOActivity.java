@@ -15,7 +15,7 @@ import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.NGO;
 import volteem.com.volteem.presenter.NGOActivityPresenter;
 
-class NGOActivity extends AppCompatActivity implements NGOActivityPresenter.View {
+public class NGOActivity extends AppCompatActivity implements NGOActivityPresenter.View {
 
     private TextView nameNGO, descriptionNGO, locationNGO;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -42,7 +42,7 @@ class NGOActivity extends AppCompatActivity implements NGOActivityPresenter.View
 
     @Override
     public void loadNGO(NGO ngo) {
-        Glide.with()
+        //Glide.with()
 
     }
 }
