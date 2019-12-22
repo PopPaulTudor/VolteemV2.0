@@ -8,6 +8,11 @@
             android:title="@string/item_events" />
 
         <item
+            android:id="@+id/nav_ngos"
+            android:icon="@drawable/ic_checked"
+            android:title="@string/ngos"/>
+
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/googleg_standard_color_18"
             android:title="@string/item_profile" />

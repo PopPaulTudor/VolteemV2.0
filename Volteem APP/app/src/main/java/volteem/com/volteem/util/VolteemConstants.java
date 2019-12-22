@@ -92,4 +92,6 @@ public class VolteemConstants {
     public static final String EXCEPTION_EVENT_DESCRIPTION = "EXCEPTION_DESCRIPTION";
 
     public static final String EXCEPTION_EVENT_SIZE = "EXCEPTION_SIZE";
+
+    public static final String INTENT_EXTRA_NGO="INTENT_EXTRA_NGO";
 }

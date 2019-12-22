@@ -100,6 +100,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                     break;
 
                 }
+                case R.id.nav_ngos: {
+                    fragment=new NgosFragment();
+                    replaceFragmentByClass(fragment);
+                    actionBarTitle="NGOs";
+                    break;
+                }
+
                 case R.id.nav_profile: {
                     fragment = new ProfileFragment();
                     replaceFragmentByClass(fragment);

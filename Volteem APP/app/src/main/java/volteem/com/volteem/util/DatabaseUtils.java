@@ -33,6 +33,7 @@ import java.util.Objects;
 import volteem.com.volteem.R;
 import volteem.com.volteem.model.entity.Event;
 import volteem.com.volteem.model.entity.Feedback;
+import volteem.com.volteem.model.entity.NGO;
 import volteem.com.volteem.model.entity.NewsMessage;
 import volteem.com.volteem.model.entity.User;
 import volteem.com.volteem.model.entity.VolteemCommonException;
@@ -53,8 +54,10 @@ public class DatabaseUtils {
     private DisplayPhotoCallBack displayPhotoCallBack;
     private EventsCallback eventsCallback;
     private CreateEventCallback createEventCallback;
+    private NGOsCallBack ngosCallBack;
     private ArrayList<NewsMessage> newsList;
     private ArrayList<Event> mEventsList;
+    private ArrayList<NGO> mNGOsList;
     private ArrayList<Uri> mUriList;
 
     public DatabaseUtils(LoginCallback loginCallback) {
@@ -93,6 +96,14 @@ public class DatabaseUtils {
 
     public DatabaseUtils(CreateEventCallback createEventCallback) {
         this.createEventCallback = createEventCallback;
+    }
+
+    public DatabaseUtils(NGOsCallBack ngosCallBack)
+    {
+        this.ngosCallBack=ngosCallBack;
+        this.mAuth=FirebaseAuth.getInstance();
+        this.mDatabase=FirebaseDatabase.getInstance().getReference();
+
     }
 
     /**
@@ -403,6 +414,29 @@ public class DatabaseUtils {
                 });
     }
 
+    public void getNGOsList()
+    {
+        mDatabase.child("NGOs").orderByChild("users/"+mAuth.getUid()).equalTo(null)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mNGOsList = new ArrayList<>();
+                        for(DataSnapshot data: dataSnapshot.getChildren()){
+                            final NGO currentNGO= data.getValue(NGO.class);
+                            mNGOsList.add(currentNGO);
+                            // TODO: 5/18/2019 add sorting method when we decide the fields
+                        }
+                        ngosCallBack.onNGOsLoadSuccessful(mNGOsList);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        ngosCallBack.onNGOsLoadFailed(new VolteemCommonException("NGOs",databaseError.getMessage()));
+                    }
+                });
+    }
+
     public static boolean isUserLoggedIn() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
@@ -505,5 +539,12 @@ public class DatabaseUtils {
         void onCreateEventSuccessful();
 
         void onCreateEventFailed(VolteemCommonException exception);
+    }
+
+    public interface  NGOsCallBack{
+        void onNGOsLoadSuccessful(ArrayList<NGO> ngos);
+
+        void onNGOsLoadFailed(VolteemCommonException exception);
+
     }
 }
